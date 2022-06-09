@@ -11,10 +11,27 @@ const App = ({}) => {
         textbox.current = element;
     }, []);
 
-    const onCreate = () => {
+    const fetchData = async (url) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Error! status: ${response.status}`);
+            }
+            const result = await response.json();
+            console.log(result?.searchResultPage?.products?.main?.items);
+            return result?.searchResultPage?.products?.main?.items;
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const onCreate = async () => {
         const query = textbox.current.value;
-        console.log(query);
-        parent.postMessage({pluginMessage: {type: "get-data", query}}, "*");
+        const items = await fetchData(
+            `https://sik.search.blue.cdtapps.com/gb/en/search-result-page?q=${query}&size=4&types=PRODUCT`
+        );
+
+        parent.postMessage({pluginMessage: {type: "get-data", items}}, "*");
     };
 
     const onCancel = () => {
@@ -24,18 +41,14 @@ const App = ({}) => {
     React.useEffect(() => {
         // This is how we read messages sent from the plugin controller
         window.onmessage = (event) => {
-            const {type, message} = event.data.pluginMessage;
-            console.log(event);
-            if (type === "get-data") {
-                console.log(message);
-            }
+            const {type, query} = event.data.pluginMessage;
+            console.log(type, query);
         };
     }, []);
 
     return (
         <div>
             <img src={require("../assets/logo.svg")} />
-            <h2>Rectangle Creator</h2>
             <p>
                 Count: <input ref={queryRef} />
             </p>
