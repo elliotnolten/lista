@@ -28,7 +28,7 @@ const App = ({}) => {
     const onCreate = async () => {
         const query = textbox.current.value;
         const items = await fetchData(
-            `https://sik.search.blue.cdtapps.com/gb/en/search-result-page?q=${query}&size=4&types=PRODUCT`
+            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=4&types=PRODUCT`
         );
 
         parent.postMessage({pluginMessage: {type: "get-data", items}}, "*");
