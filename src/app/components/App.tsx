@@ -25,13 +25,34 @@ const App = ({}) => {
         }
     };
 
+    const fetchImagefromURL = async (url) => {
+        await fetch(`https://secure-thicket-88117.herokuapp.com/${url}`)
+            .then((r) => {
+                try {
+                    return r.arrayBuffer();
+                } catch (error) {
+                    console.error(error);
+                }
+            })
+            .then((a) => {
+                return new Uint8Array(a);
+            });
+    };
+
     const onCreate = async () => {
         const query = textbox.current.value;
         const items = await fetchData(
             `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=4&types=PRODUCT`
         );
 
-        parent.postMessage({pluginMessage: {type: "get-data", items}}, "*");
+        const mainImages = [];
+
+        items.map((item, index) => {
+            console.log(item?.product?.mainImageUrl, index);
+            mainImages.push(fetchImagefromURL(item?.product?.mainImageUrl));
+        });
+
+        parent.postMessage({pluginMessage: {type: "get-data", items, mainImages}}, "*");
     };
 
     const onCancel = () => {
