@@ -1,41 +1,56 @@
-import * as React from 'react';
-import '../styles/ui.css';
+import * as React from "react";
+import "../styles/ui.css";
 
 declare function require(path: string): any;
 
 const App = ({}) => {
     const textbox = React.useRef<HTMLInputElement>(undefined);
 
-    const countRef = React.useCallback((element: HTMLInputElement) => {
-        if (element) element.value = '5';
+    const queryRef = React.useCallback((element: HTMLInputElement) => {
+        if (element) element.value = "sofa";
         textbox.current = element;
     }, []);
 
-    const onCreate = () => {
-        const count = parseInt(textbox.current.value, 10);
-        parent.postMessage({pluginMessage: {type: 'create-rectangles', count}}, '*');
+    const fetchData = async (url) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Error! status: ${response.status}`);
+            }
+            const result = await response.json();
+            console.log(result?.searchResultPage?.products?.main?.items);
+            return result?.searchResultPage?.products?.main?.items;
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const onCreate = async () => {
+        const query = textbox.current.value;
+        const items = await fetchData(
+            `https://sik.search.blue.cdtapps.com/gb/en/search-result-page?q=${query}&size=4&types=PRODUCT`
+        );
+
+        parent.postMessage({pluginMessage: {type: "get-data", items}}, "*");
     };
 
     const onCancel = () => {
-        parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
+        parent.postMessage({pluginMessage: {type: "cancel"}}, "*");
     };
 
     React.useEffect(() => {
         // This is how we read messages sent from the plugin controller
         window.onmessage = (event) => {
-            const {type, message} = event.data.pluginMessage;
-            if (type === 'create-rectangles') {
-                console.log(`Figma Says: ${message}`);
-            }
+            const {type, query} = event.data.pluginMessage;
+            console.log(type, query);
         };
     }, []);
 
     return (
         <div>
-            <img src={require('../assets/logo.svg')} />
-            <h2>Rectangle Creator</h2>
+            <img src={require("../assets/logo.svg")} />
             <p>
-                Count: <input ref={countRef} />
+                Count: <input ref={queryRef} />
             </p>
             <button id="create" onClick={onCreate}>
                 Create
