@@ -1,33 +1,30 @@
 figma.showUI(__html__);
 // figma.ui.postMessage({type: "networkRequest"})
 
-figma.ui.onmessage = (msg) => {
+figma.ui.onmessage = async (msg) => {
+    const nodes: SceneNode[] = [];
+
     if (msg.type === "get-data") {
         const itemComponentSet = figma.currentPage.selection[0] as ComponentNode;
 
-        const nodes: SceneNode[] = [];
-
-        msg.items.map((item, index) => {
-            console.log(item, index);
+        for (let i = 0; i < msg.items.length; i++) {
             const newItem = itemComponentSet.createInstance();
-            newItem.x = index * 300;
+            const itemName = newItem.findOne((node) => node.name == "name" && node.type == "TEXT") as TextNode;
+            await figma.loadFontAsync(itemName.fontName as FontName);
+            itemName.characters = msg.items[i]?.product?.name;
+
+            newItem.x = i * 400;
+
             nodes.push(newItem);
-        });
+        }
 
-        // for (let i = 0; i < 4; i++) {
-        //     const rect = figma.createRectangle();
-        //     rect.x = i * 150;
-        //     rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}];
-        //     figma.currentPage.appendChild(rect);
-        //     nodes.push(rect);
-        // }
-
-        figma.currentPage.selection = nodes;
         figma.viewport.scrollAndZoomIntoView(nodes);
 
         // This is how figma responds back to the ui
         // figma.ui.postMessage({type: "get-data", query: msg.query})
     }
 
-    figma.closePlugin();
+    if (msg.type == "cancel") {
+        figma.closePlugin();
+    }
 };
