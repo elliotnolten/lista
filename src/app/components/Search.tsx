@@ -34,9 +34,13 @@ export const Search = () => {
         );
     };
 
+    const SIKApiEndpoint = "https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=sofa&size=8&types=PRODUCT";
+    // const NYTEndpoint =
+    // "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=6e05q6EpTOjDTFY2i8JqZzGAFw2uSoM3";
+
     function fetchSIKApi() {
         return new Promise(async (resolve, reject) => {
-            fetch("https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=sofa&size=4&types=PRODUCT")
+            fetch(SIKApiEndpoint)
                 .then((res) => res.json())
                 .then(async (response) => {
                     resolve(response);
