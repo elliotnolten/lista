@@ -1,30 +1,97 @@
-figma.showUI(__html__);
-// figma.ui.postMessage({type: "networkRequest"})
+function main() {
+    figma.showUI(__html__, {width: 480, height: 480});
+    figma.ui.onmessage = (msg) => {
+        let body = JSON.parse(msg.payload);
+        fillCards(body);
+    };
+}
 
-figma.ui.onmessage = async (msg) => {
-    const nodes: SceneNode[] = [];
+async function fillCards(data) {
+    const items = data.response.searchResultPage.products.main.items;
 
-    if (msg.type === "get-data") {
-        const itemComponentSet = figma.currentPage.selection[0] as ComponentNode;
+    try {
+        let nodes = figma.currentPage.selection;
 
-        for (let i = 0; i < msg.items.length; i++) {
-            const newItem = itemComponentSet.createInstance();
-            const itemName = newItem.findOne((node) => node.name == "name" && node.type == "TEXT") as TextNode;
-            await figma.loadFontAsync(itemName.fontName as FontName);
-            itemName.characters = msg.items[i]?.product?.name;
-
-            newItem.x = i * 400;
-
-            nodes.push(newItem);
+        if (nodes.length === 0) {
+            alert("No Layers Selected");
+            return;
         }
 
-        figma.viewport.scrollAndZoomIntoView(nodes);
+        let matchingNodes = [];
+        for (let i = 0; i < nodes.length; i++) {
+            let node = nodes[i];
+            let item = items[i].product;
+            if (shouldReplaceText(node)) {
+                matchingNodes.push([node, item]);
+            }
+            // @ts-ignore
+            if (node.children) {
+                // @ts-ignore
+                let children = loopChildNodes(node.children, item);
+                if (children.length) {
+                    matchingNodes = [...matchingNodes, ...children];
+                }
+            }
+        }
 
-        // This is how figma responds back to the ui
-        // figma.ui.postMessage({type: "get-data", query: msg.query})
-    }
+        if (matchingNodes.length === 0) {
+            alert("No values to replace, please rename your layers starting with a '#', example #name.text");
+        }
 
-    if (msg.type == "cancel") {
-        figma.closePlugin();
+        for (let i = 0; i < matchingNodes.length; i++) {
+            let node = matchingNodes[i][0];
+            let row = matchingNodes[i][1];
+            let value = gatherValue(node.name, row);
+            replaceText(node, value);
+        }
+    } catch (error) {
+        console.log(error);
+        return true;
     }
-};
+}
+
+function shouldReplaceText(node) {
+    return node.name.includes("#");
+}
+
+const gatherValue = (name, row) =>
+    name
+        .replace("#", "")
+        .split(".")
+        .reduce(function (obj, prop) {
+            if (prop.includes("[") && prop.includes("]")) {
+                prop = prop.replace("[").replace("]");
+            }
+            return obj && obj[prop] ? obj[prop] : "--";
+        }, row);
+
+async function replaceText(node, content) {
+    /**
+     * Load ALL fonts in the text
+     */
+    let len = node.characters.length;
+    for (let i = 0; i < len; i++) {
+        await figma.loadFontAsync(node.getRangeFontName(i, i + 1));
+    }
+    /**
+     * Once fonts are loaded we can change the text
+     */
+    node.characters = String(content);
+}
+
+function loopChildNodes(nodes, row) {
+    let matches = [];
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (shouldReplaceText(node)) {
+            matches.push([node, row]);
+        }
+        if (node.children) {
+            const nextMatches = loopChildNodes(node.children, row);
+            matches = [...matches, ...nextMatches];
+        }
+    }
+    return matches;
+}
+
+main();
