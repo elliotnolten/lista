@@ -14,12 +14,13 @@ export const Search = () => {
     };
 
     const handleSubmit = async () => {
-        const SIKApiEndpoint = `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=8&types=PRODUCT`;
+        const SIKApiEndpoint = `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=2&types=PRODUCT`;
         setLoading(true);
         try {
             let response = await fetchSIKApi(SIKApiEndpoint);
             setLoading(false);
             sendJsonMessage("get-results", {response});
+            getImages(response);
         } catch (error) {
             console.log(error);
         }
@@ -50,7 +51,41 @@ export const Search = () => {
         });
     }
 
-    console.log(loading);
+    function getImages(data) {
+        console.log(data);
+        const images = [];
+        data.searchResultPage.products.main.items.map((item) => {
+            images.push({url: item.product.mainImageUrl, id: item.product.id});
+        });
+        for (let i = 0; i < images.length; i++) {
+            console.log(images[i]);
+            fetchImageFromURL(images[i].url, images[i].id);
+        }
+    }
+
+    async function fetchImageFromURL(url, id) {
+        const proxyServer = "https://secure-thicket-88117.herokuapp.com";
+        await fetch(`${proxyServer}/${url}`)
+            .then((response) => {
+                try {
+                    return response.arrayBuffer();
+                } catch (error) {
+                    console.error(error);
+                }
+            })
+            .then((array) => {
+                parent.postMessage(
+                    {
+                        pluginMessage: {
+                            type: "imgData",
+                            data: new Uint8Array(array),
+                            id
+                        }
+                    },
+                    "*"
+                );
+            });
+    }
 
     return (
         <div>
