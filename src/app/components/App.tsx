@@ -8,7 +8,7 @@ const App = ({}) => {
     return (
         <div>
             <img src={require("../assets/logo.svg")} />
-            <h2>Find IKEA products</h2>
+            <p>Add real IKEA products to your designs.</p>
             <Search />
         </div>
     );

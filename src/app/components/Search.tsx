@@ -7,14 +7,20 @@ import * as React from "react";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
-    // const [results, setResults] = React.useState([]);
+    const [query, setQuery] = React.useState("");
+
+    const handleSearchChange = (event) => {
+        console.log(event.target.value);
+        setQuery(event.target.value);
+    };
 
     const handleSubmit = async () => {
+        const SIKApiEndpoint = `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=8&types=PRODUCT`;
         setLoading(true);
         try {
-            let response = await fetchSIKApi();
+            let response = await fetchSIKApi(SIKApiEndpoint);
             setLoading(false);
-            sendJsonMessage("test", {response});
+            sendJsonMessage("get-results", {response});
         } catch (error) {
             console.log(error);
         }
@@ -34,13 +40,9 @@ export const Search = () => {
         );
     };
 
-    const SIKApiEndpoint = "https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=sofa&size=8&types=PRODUCT";
-    // const NYTEndpoint =
-    // "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=6e05q6EpTOjDTFY2i8JqZzGAFw2uSoM3";
-
-    function fetchSIKApi() {
+    function fetchSIKApi(endpoint) {
         return new Promise(async (resolve, reject) => {
-            fetch(SIKApiEndpoint)
+            fetch(endpoint)
                 .then((res) => res.json())
                 .then(async (response) => {
                     resolve(response);
@@ -53,11 +55,20 @@ export const Search = () => {
 
     return (
         <div>
-            <h3>Search</h3>
-            <input type="search" />
-            <button type="submit" onClick={handleSubmit}>
-                Submit
-            </button>
+            <div className="input input--with-icon">
+                <div className="icon icon--search" />
+                <input
+                    type="search"
+                    className="input__field"
+                    placeholder="What are you looking for?"
+                    onChange={handleSearchChange}
+                />
+            </div>
+            <p>
+                <button type="submit" onClick={handleSubmit} className="button button--primary">
+                    Submit
+                </button>
+            </p>
         </div>
     );
 };
