@@ -54,7 +54,7 @@ export const Search = () => {
     return (
         <div>
             <h3>Search</h3>
-            <input type="search" />
+            <input type="search" className="input__field" placeholder="What are you looking for?" />
             <button type="submit" onClick={handleSubmit}>
                 Submit
             </button>

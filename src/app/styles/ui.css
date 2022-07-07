@@ -1,3 +1,5 @@
+@import url("../../../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css");
+
 body {
     font: 12px sans-serif;
     text-align: center;
