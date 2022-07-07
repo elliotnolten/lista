@@ -10,7 +10,6 @@ export const Search = () => {
     const [query, setQuery] = React.useState("");
 
     const handleSearchChange = (event) => {
-        console.log(event.target.value);
         setQuery(event.target.value);
     };
 
