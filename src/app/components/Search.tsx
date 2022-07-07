@@ -65,7 +65,7 @@ export const Search = () => {
             </div>
             <p>
                 <button type="submit" onClick={handleSubmit} className="button button--primary">
-                    Submit
+                    {loading ? "Loading..." : "Submit"}
                 </button>
             </p>
         </div>

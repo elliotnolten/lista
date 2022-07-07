@@ -1,8 +1,10 @@
 function main() {
     figma.showUI(__html__, {width: 480, height: 480});
     figma.ui.onmessage = (msg) => {
-        let body = JSON.parse(msg.payload);
-        fillCards(body);
+        if (msg.type == "get-results") {
+            let body = JSON.parse(msg.payload);
+            fillCards(body);
+        }
     };
 }
 
