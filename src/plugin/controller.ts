@@ -53,7 +53,8 @@ async function fillCards(data) {
                 // @ts-ignore
                 figma.ui.postMessage({
                     type: "image-url",
-                    url: "https://i.dlpng.com/static/png/7259423_preview.png",
+                    url: item.mainImageUrl,
+                    // @ts-ignore
                     targetID: loopChildFrameNodes(node.children)[0]
                 });
             }

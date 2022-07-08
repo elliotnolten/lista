@@ -15,7 +15,6 @@ export const Search = () => {
     const MessageListener = (event) => {
         const {type, url, targetID} = event.data.pluginMessage;
         if (type === "image-url") {
-            console.log(url, targetID);
             fetchImageFromURL(url, targetID);
         }
     };
@@ -91,7 +90,7 @@ export const Search = () => {
 
     async function fetchImageFromURL(url, targetID) {
         const proxyServer = "https://secure-thicket-88117.herokuapp.com";
-        await fetch(`${proxyServer}/${url}`)
+        await fetch(`${proxyServer}/${url}?f=xxs`)
             .then((response) => {
                 try {
                     return response.arrayBuffer();
