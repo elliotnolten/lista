@@ -7,20 +7,48 @@ import * as React from "react";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
-    const [query, setQuery] = React.useState("");
+    const [query, setQuery] = React.useState("billy");
+    const [size, setSize] = React.useState(2);
+    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/nl/en/search-result-page");
+
+    // Listen to plugin messages
+    const MessageListener = (event) => {
+        const {type, url, targetID} = event.data.pluginMessage;
+        if (type === "image-url") {
+            console.log(url, targetID);
+            fetchImageFromURL(url, targetID);
+        }
+    };
+
+    React.useEffect(() => {
+        window.addEventListener("message", MessageListener);
+
+        return () => {
+            window.removeEventListener("message", MessageListener);
+        };
+    }, []);
+
+    React.useEffect(() => {
+        setEndpoint(
+            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${size}&types=PRODUCT`
+        );
+    }, [query, size]);
 
     const handleSearchChange = (event) => {
         setQuery(event.target.value);
     };
 
+    const handleSizeChange = (event) => {
+        setSize(event.target.value);
+    };
+
     const handleSubmit = async () => {
-        const SIKApiEndpoint = `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=2&types=PRODUCT`;
         setLoading(true);
         try {
-            let response = await fetchSIKApi(SIKApiEndpoint);
+            let response = await fetchSIKApi(endpoint);
             setLoading(false);
             sendJsonMessage("get-results", {response});
-            getImages(response);
+            // getImages(response);
         } catch (error) {
             console.log(error);
         }
@@ -51,19 +79,17 @@ export const Search = () => {
         });
     }
 
-    function getImages(data) {
-        console.log(data);
-        const images = [];
-        data.searchResultPage.products.main.items.map((item) => {
-            images.push({url: item.product.mainImageUrl, id: item.product.id});
-        });
-        for (let i = 0; i < images.length; i++) {
-            console.log(images[i]);
-            fetchImageFromURL(images[i].url, images[i].id);
-        }
-    }
+    // function getImages(data) {
+    //     const images = [];
+    //     data?.searchResultPage?.products?.main?.items.map((item) => {
+    //         images.push({url: item?.product?.mainImageUrl, id: item.product?.id});
+    //     });
+    //     for (let i = 0; i < images.length; i++) {
+    //         fetchImageFromURL(images[i].url, images[i].id);
+    //     }
+    // }
 
-    async function fetchImageFromURL(url, id) {
+    async function fetchImageFromURL(url, targetID) {
         const proxyServer = "https://secure-thicket-88117.herokuapp.com";
         await fetch(`${proxyServer}/${url}`)
             .then((response) => {
@@ -79,7 +105,7 @@ export const Search = () => {
                         pluginMessage: {
                             type: "imgData",
                             data: new Uint8Array(array),
-                            id
+                            targetID
                         }
                     },
                     "*"
@@ -96,7 +122,12 @@ export const Search = () => {
                     className="input__field"
                     placeholder="What are you looking for?"
                     onChange={handleSearchChange}
+                    value={query}
                 />
+            </div>
+            <div className="input">
+                <label>How many products?</label>
+                <input type="number" width="100px" className="input__field" onChange={handleSizeChange} value={size} />
             </div>
             <p>
                 <button type="submit" onClick={handleSubmit} className="button button--primary">

@@ -1,10 +1,24 @@
 function main() {
     figma.showUI(__html__, {width: 480, height: 480});
-    figma.ui.onmessage = (msg) => {
-        console.log(msg);
-        if (msg.type == "get-results") {
-            let body = JSON.parse(msg.payload);
+    figma.ui.onmessage = (message) => {
+        // console.log(message);
+        if (message.type === "get-results") {
+            let body = JSON.parse(message.payload);
             fillCards(body);
+        }
+        if (message.type === "imgData") {
+            console.log(message.data, message.targetID);
+            const target = figma.currentPage.findOne((node) => node.id === message.targetID);
+            console.log(figma.createImage(message.data));
+            const imageHash = figma.createImage(message.data).hash;
+            const newFill = {
+                type: "IMAGE",
+                opacity: 1,
+                blendMode: "NORMAL",
+                scaleMode: "FILL",
+                imageHash
+            };
+            target["fills"] = [newFill];
         }
     };
 }
@@ -20,33 +34,45 @@ async function fillCards(data) {
             return;
         }
 
-        let matchingNodes = [];
+        let matchingTextNodes = [];
         for (let i = 0; i < nodes.length; i++) {
             let node = nodes[i];
             let item = items[i].product;
-            if (shouldReplaceText(node)) {
-                matchingNodes.push([node, item]);
-            }
+
+            // if (shouldReplaceText(node)) {
+            //     matchingTextNodes.push([node, item]);
+            // }
+
             // @ts-ignore
             if (node.children) {
                 // @ts-ignore
-                let children = loopChildNodes(node.children, item);
+                let children = loopChildTextNodes(node.children, item);
                 if (children.length) {
-                    matchingNodes = [...matchingNodes, ...children];
+                    matchingTextNodes = [...matchingTextNodes, ...children];
                 }
+                // @ts-ignore
+                figma.ui.postMessage({
+                    type: "image-url",
+                    url: "https://i.dlpng.com/static/png/7259423_preview.png",
+                    targetID: loopChildFrameNodes(node.children)[0]
+                });
             }
         }
 
-        if (matchingNodes.length === 0) {
+        if (matchingTextNodes.length === 0) {
             alert("No values to replace, please rename your layers starting with a '#', example #name.text");
         }
 
-        for (let i = 0; i < matchingNodes.length; i++) {
-            let node = matchingNodes[i][0];
-            let row = matchingNodes[i][1];
+        for (let i = 0; i < matchingTextNodes.length; i++) {
+            let node = matchingTextNodes[i][0];
+            let row = matchingTextNodes[i][1];
             let value = gatherValue(node.name, row);
             replaceText(node, value);
         }
+        figma.ui.postMessage({
+            type: "done",
+            message: `${nodes.length} instances are populated!`
+        });
     } catch (error) {
         console.log(error);
         return true;
@@ -54,7 +80,15 @@ async function fillCards(data) {
 }
 
 function shouldReplaceText(node) {
-    return node.name.includes("#");
+    // Return TRUE when the node type == "TEXT" AND when the node name includes "#"
+    // Otherwise return FALSE
+    return node.type === "TEXT" && node.name.includes("#");
+}
+
+function shouldFillMainImage(node) {
+    // Return TRUE when the node type == "FRAME" AND when the node name includes "#"
+    // Otherwise return FALSE
+    return node.type === "FRAME" && node.name.includes("Image");
 }
 
 const gatherValue = (name, row) =>
@@ -82,19 +116,35 @@ async function replaceText(node, content) {
     node.characters = String(content);
 }
 
-function loopChildNodes(nodes, row) {
-    let matches = [];
+function loopChildTextNodes(nodes, row) {
+    let textMatches = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (shouldReplaceText(node)) {
-            matches.push([node, row]);
+            textMatches.push([node, row]);
         }
         if (node.children) {
-            const nextMatches = loopChildNodes(node.children, row);
-            matches = [...matches, ...nextMatches];
+            const nextTextMatches = loopChildTextNodes(node.children, row);
+            textMatches = [...textMatches, ...nextTextMatches];
         }
     }
-    return matches;
+    return textMatches;
+}
+
+// Loop through child nodes, check whether their name includes "Image"
+function loopChildFrameNodes(nodes) {
+    let imageFrameIDs = [];
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (shouldFillMainImage(node)) {
+            imageFrameIDs.push(node.id);
+        }
+        if (node.children) {
+            const nextImageFrameIDs = loopChildFrameNodes(node.children);
+            imageFrameIDs = [...imageFrameIDs, ...nextImageFrameIDs];
+        }
+    }
+    return imageFrameIDs;
 }
 
 main();
