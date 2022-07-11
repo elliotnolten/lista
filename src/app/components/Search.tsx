@@ -1,21 +1,19 @@
 import * as React from "react";
-
-// interface SIKApi {
-//     status: string;
-//     response: Response;
-// }
+import * as imageConvert from "image-conversion";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("billy");
     const [size, setSize] = React.useState(2);
-    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/nl/en/search-result-page");
+    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
-        const {type, url, targetID} = event.data.pluginMessage;
+        const {type, url, urlPicsum, targetID} = event.data.pluginMessage;
+        const imageUrl = url;
         if (type === "image-url") {
-            fetchImageFromURL(url, targetID);
+            console.log(`${imageUrl}?f=xxs`);
+            fetchImageFromURL(`${imageUrl}?f=xxs`, targetID);
         }
     };
 
@@ -78,38 +76,46 @@ export const Search = () => {
         });
     }
 
-    // function getImages(data) {
-    //     const images = [];
-    //     data?.searchResultPage?.products?.main?.items.map((item) => {
-    //         images.push({url: item?.product?.mainImageUrl, id: item.product?.id});
-    //     });
-    //     for (let i = 0; i < images.length; i++) {
-    //         fetchImageFromURL(images[i].url, images[i].id);
-    //     }
-    // }
-
     async function fetchImageFromURL(url, targetID) {
         const proxyServer = "https://secure-thicket-88117.herokuapp.com";
-        await fetch(`${proxyServer}/${url}?f=xxs`)
-            .then((response) => {
-                try {
-                    return response.arrayBuffer();
-                } catch (error) {
-                    console.error(error);
+        const proxyUrl = `${proxyServer}/${url}`;
+        let data = await fetch(proxyUrl).then((response) => {
+            try {
+                return response;
+            } catch (error) {
+                return error;
+            }
+        });
+        // IKEA images are webp, convert to jpeg
+        let blob = await data.blob();
+
+        const image = new Image();
+        image.src = proxyUrl;
+        image.crossOrigin = "anonymous";
+        await image.decode();
+
+        const canvas = await imageConvert.imagetoCanvas(image);
+
+        const jpeg = new Image();
+        jpeg.src = canvas.toDataURL("image/jpeg");
+        await jpeg.decode();
+
+        data = await fetch(jpeg.src);
+        blob = await data.blob();
+
+        const buffer = await blob["arrayBuffer"]();
+        const uint8 = new Uint8Array(buffer);
+
+        parent.postMessage(
+            {
+                pluginMessage: {
+                    type: "imgData",
+                    data: uint8,
+                    targetID
                 }
-            })
-            .then((array) => {
-                parent.postMessage(
-                    {
-                        pluginMessage: {
-                            type: "imgData",
-                            data: new Uint8Array(array),
-                            targetID
-                        }
-                    },
-                    "*"
-                );
-            });
+            },
+            "*"
+        );
     }
 
     return (

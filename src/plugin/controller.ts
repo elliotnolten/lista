@@ -1,15 +1,12 @@
 function main() {
     figma.showUI(__html__, {width: 480, height: 480});
     figma.ui.onmessage = (message) => {
-        // console.log(message);
         if (message.type === "get-results") {
             let body = JSON.parse(message.payload);
             fillCards(body);
         }
         if (message.type === "imgData") {
-            console.log(message.data, message.targetID);
             const target = figma.currentPage.findOne((node) => node.id === message.targetID);
-            console.log(figma.createImage(message.data));
             const imageHash = figma.createImage(message.data).hash;
             const newFill = {
                 type: "IMAGE",
@@ -38,10 +35,6 @@ async function fillCards(data) {
         for (let i = 0; i < nodes.length; i++) {
             let node = nodes[i];
             let item = items[i].product;
-
-            // if (shouldReplaceText(node)) {
-            //     matchingTextNodes.push([node, item]);
-            // }
 
             // @ts-ignore
             if (node.children) {
@@ -86,10 +79,10 @@ function shouldReplaceText(node) {
     return node.type === "TEXT" && node.name.includes("#");
 }
 
-function shouldFillMainImage(node) {
+function isImage(node) {
     // Return TRUE when the node type == "FRAME" AND when the node name includes "#"
     // Otherwise return FALSE
-    return node.type === "FRAME" && node.name.includes("Image");
+    return node.name.includes("Image");
 }
 
 const gatherValue = (name, row) =>
@@ -100,7 +93,7 @@ const gatherValue = (name, row) =>
             if (prop.includes("[") && prop.includes("]")) {
                 prop = prop.replace("[").replace("]");
             }
-            return obj && obj[prop] ? obj[prop] : "--";
+            return obj && obj[prop] ? obj[prop] : "";
         }, row);
 
 async function replaceText(node, content) {
@@ -132,12 +125,12 @@ function loopChildTextNodes(nodes, row) {
     return textMatches;
 }
 
-// Loop through child nodes, check whether their name includes "Image"
+// Loop through child nodes, check whether their name includes "Image" and push their ids in an array
 function loopChildFrameNodes(nodes) {
     let imageFrameIDs = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        if (shouldFillMainImage(node)) {
+        if (isImage(node)) {
             imageFrameIDs.push(node.id);
         }
         if (node.children) {
