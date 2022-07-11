@@ -1,18 +1,19 @@
 import * as React from "react";
 import * as imageConvert from "image-conversion";
+import {Button, Input} from "react-figma-ui";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
-    const [query, setQuery] = React.useState("billy");
-    const [size, setSize] = React.useState(2);
+    const [query, setQuery] = React.useState("Billy");
+    // const [language, setLanguage] = React.useState("us/en/");
+    // const [size, setSize] = React.useState(2);
     const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
-        const {type, url, urlPicsum, targetID} = event.data.pluginMessage;
+        const {type, url, targetID} = event.data.pluginMessage;
         const imageUrl = url;
         if (type === "image-url") {
-            console.log(`${imageUrl}?f=xxs`);
             fetchImageFromURL(`${imageUrl}?f=xxs`, targetID);
         }
     };
@@ -26,17 +27,12 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        setEndpoint(
-            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${size}&types=PRODUCT`
-        );
-    }, [query, size]);
+        setEndpoint(`https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&types=PRODUCT`);
+        console.log(endpoint);
+    }, [query]);
 
     const handleSearchChange = (event) => {
         setQuery(event.target.value);
-    };
-
-    const handleSizeChange = (event) => {
-        setSize(event.target.value);
     };
 
     const handleSubmit = async () => {
@@ -118,26 +114,23 @@ export const Search = () => {
         );
     }
 
+    // const languages = [
+    //     {value: "gb/en/", label: "gb/en/"},
+    //     {value: "us/en/", label: "us/en/"}
+    // ];
+
     return (
         <div>
-            <div className="input input--with-icon">
-                <div className="icon icon--search" />
-                <input
-                    type="search"
-                    className="input__field"
-                    placeholder="What are you looking for?"
-                    onChange={handleSearchChange}
-                    value={query}
-                />
-            </div>
-            <div className="input">
-                <label>How many products?</label>
-                <input type="number" width="100px" className="input__field" onChange={handleSizeChange} value={size} />
-            </div>
+            <Input
+                value={query}
+                onChange={handleSearchChange}
+                placeholder="What are you looking for?"
+                iconProps={{iconName: "search"}}
+            />
             <p>
-                <button type="submit" onClick={handleSubmit} className="button button--primary">
+                <Button onClick={handleSubmit} tint="primary">
                     {loading ? "Loading..." : "Submit"}
-                </button>
+                </Button>
             </p>
         </div>
     );
