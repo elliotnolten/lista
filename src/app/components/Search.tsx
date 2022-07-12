@@ -17,7 +17,6 @@ export const Search = () => {
         }
         if (type == "size") {
             setSize(size);
-            console.log(size);
         }
     };
 

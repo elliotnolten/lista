@@ -45,6 +45,7 @@ async function fillCards(data) {
         }
 
         let matchingTextNodes = [];
+        let matchingFrameNodes = [];
         for (let i = 0; i < nodes.length; i++) {
             let node = nodes[i];
             let item = items[i].product;
@@ -57,16 +58,20 @@ async function fillCards(data) {
                     matchingTextNodes = [...matchingTextNodes, ...children];
                 }
                 // @ts-ignore
-                figma.ui.postMessage({
-                    type: "image-url",
-                    url: item.mainImageUrl,
-                    // @ts-ignore
-                    targetID: loopChildFrameNodes(node.children)[0]
-                });
+                let frameChildren = loopChildFrameNodes(node.children, item);
+                if (frameChildren.length) {
+                    matchingFrameNodes = [...matchingFrameNodes, ...frameChildren];
+                }
+                // figma.ui.postMessage({
+                //     type: "image-url",
+                //     url: item.mainImageUrl,
+                //     // @ts-ignore
+                //     targetID: loopChildFrameNodes(node.children)[0]
+                // });
             }
         }
 
-        if (matchingTextNodes.length === 0) {
+        if (matchingTextNodes.length === 0 && matchingFrameNodes.length === 0) {
             alert("No values to replace, please rename your layers starting with a '#', example #name.text");
         }
 
@@ -76,6 +81,19 @@ async function fillCards(data) {
             let value = gatherValue(node.name, row);
             replaceText(node, value);
         }
+
+        for (let i = 0; i < matchingFrameNodes.length; i++) {
+            let targetID = matchingFrameNodes[i][0];
+            let name = matchingFrameNodes[i][1].toString();
+            let row = matchingFrameNodes[i][2];
+            let url = gatherValue(name, row);
+            figma.ui.postMessage({
+                type: "image-url",
+                url,
+                targetID
+            });
+        }
+
         figma.ui.postMessage({
             type: "done",
             message: `${nodes.length} instances are populated!`
@@ -139,19 +157,19 @@ function loopChildTextNodes(nodes, row) {
 }
 
 // Loop through child nodes, check whether their name includes "Image" and push their ids in an array
-function loopChildFrameNodes(nodes) {
-    let imageFrameIDs = [];
+function loopChildFrameNodes(nodes, row) {
+    let imageFrames = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (isImage(node)) {
-            imageFrameIDs.push(node.id);
+            imageFrames.push([node.id, node.name, row]);
         }
         if (node.children) {
-            const nextImageFrameIDs = loopChildFrameNodes(node.children);
-            imageFrameIDs = [...imageFrameIDs, ...nextImageFrameIDs];
+            const nextImageFrames = loopChildFrameNodes(node.children, row);
+            imageFrames = [...imageFrames, ...nextImageFrames];
         }
     }
-    return imageFrameIDs;
+    return imageFrames;
 }
 
 main();
