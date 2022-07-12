@@ -5,9 +5,8 @@ import {Button, Input} from "react-figma-ui";
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
-    // const [language, setLanguage] = React.useState("us/en/");
     const [size, setSize] = React.useState(0);
-    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
+    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/nl/en/search-result-page");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
@@ -47,7 +46,6 @@ export const Search = () => {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
             sendJsonMessage("get-results", {response});
-            // getImages(response);
         } catch (error) {
             console.log(error);
         }
@@ -119,11 +117,6 @@ export const Search = () => {
             "*"
         );
     }
-
-    // const languages = [
-    //     {value: "gb/en/", label: "gb/en/"},
-    //     {value: "us/en/", label: "us/en/"}
-    // ];
 
     return (
         <div>
