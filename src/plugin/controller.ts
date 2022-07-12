@@ -4,7 +4,6 @@ function main() {
     // every time a number of frames/instances are selected, store that number in a constant
     // and send that number to the iframe
     sendSize(figma.currentPage.selection.length);
-    console.log(figma.currentPage.selection.length);
 
     figma.on("selectionchange", () => {
         sendSize(figma.currentPage.selection.length);
