@@ -1,18 +1,37 @@
-# Figma Plugin React Template
+# LISTA Figma plugin
+Populate your designs with real IKEA product data!
 
-![62862431-71537f00-bd0e-11e9-85db-d97c0fb729a4](https://user-images.githubusercontent.com/16322616/62862692-46b5f600-bd0f-11e9-93b0-75955d1de8f3.png)
-
-
-This template contains the react example as shown on [Figma Docs](https://www.figma.com/plugin-docs/intro/), with some structural changes and extra tooling.
-
-## Quickstart
+## Installation
 * Run `yarn` to install dependencies.
 * Run `yarn build:watch` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `Import plugin from manifest...` and choose `manifest.json` file from this repo.
 
-⭐ To change the UI of your plugin (the react code), start editing [App.tsx](./src/app/components/App.tsx).  
-⭐ To interact with the Figma API edit [controller.ts](./src/plugin/controller.ts).  
-⭐ Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
+---
+
+## How to use it
+### Data
+This plugin fetches data from the [SIK API](https://sik-debug-dot-ikea-search-data.ew.r.appspot.com/index.html).
+This API retrieves product data based on a search query that reflects the actual result that you see on an IKEA [search result page](https://www.ikea.com/nl/en/search/products/?q=billy).
+### Input
+This API can take several parameters to make the API response to fit your needs.
+
+However the LISTA Figma plugin makes some assumptions on what we currently need as a design team and has default values for the following parameters.
+
+**Default values**
+| Key | Description |Type | Default value
+| ----------- | ----------- | ----------- | ----------- |
+| language | This affects the language of all the data. | `String` | "nl/en/" |
+| types | The API can also output "CONTENT", "STORE", etc. | `String` | "PRODUCT" |
+
+**Variables**
+| Key | Description | Type | Default value
+| ----------- | ----------- | ----------- | ----------- |
+| q | The search query | `String` | "" |
+| size | The amount of items to retrieve. This number is automatically set by the amount of selected items on your Figma canvas. | `Number` | 0 |
+
+### Output and naming your layers
+
+---
 
 ## Toolings
 This repo is using:
