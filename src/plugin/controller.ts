@@ -1,5 +1,19 @@
 function main() {
     figma.showUI(__html__, {width: 240, height: 320});
+
+    // every time a number of frames/instances are selected, store that number in a constant
+    // and send that number to the iframe
+    sendSize(figma.currentPage.selection.length);
+    console.log(figma.currentPage.selection.length);
+
+    figma.on("selectionchange", () => {
+        sendSize(figma.currentPage.selection.length);
+    });
+
+    function sendSize(size) {
+        figma.ui.postMessage({type: "size", size});
+    }
+
     figma.ui.onmessage = (message) => {
         if (message.type === "get-results") {
             let body = JSON.parse(message.payload);
