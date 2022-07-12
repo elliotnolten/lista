@@ -44,6 +44,47 @@ To make sure your text layers are populated with the correct texts and the Frame
 | `name` | `#name `|
 | `typeName` | `#typeName` |
 | ```"price": {"prefix"}``` | `#price.prefix` |
+
+![data example](/images/data-example.png)
+
+Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=billy&types=PRODUCT) to see what other pieces of information you can add to your design.
+
+```json
+"product": {
+  "itemNo": "00263850",
+  "itemType": "ART",
+  "price": {
+    "prefix": "€ ",
+    "wholeNumber": "44",
+    "separator": ".",
+    "decimals": "99",
+    "suffix": "",
+    "isRegularCurrency": false
+  },
+  "contextualImageUrl": "https://www.ikea.com/nl/en/images/products/billy-bookcase-white__1051924_pe845813_s5.jpg",
+  "mainImageAlt": "BILLY Bookcase, white, 80x28x202 cm",
+  "breathTaking": false,
+  "discount": "",
+  "name": "BILLY",
+  "typeName": "Bookcase",
+  "itemMeasureReferenceText": "80x28x202 cm",
+  "mainImageUrl": "https://www.ikea.com/nl/en/images/products/billy-bookcase-white__0625599_pe692385_s5.jpg",
+  "pipUrl": "https://www.ikea.com/nl/en/p/billy-bookcase-white-00263850/",
+  "id": "00263850",
+  "itemNoGlobal": "00263850",
+  "onlineSellable": true,
+  "lastChance": false,
+  "gprDescription": {},
+  "colors": [],
+  "priceNumeral": 44.99,
+  "currencyCode": "EUR",
+  "tag": "NONE",
+  "quickFacts": [],
+  "features": [],
+  "availability": []
+}
+```
+
 ---
 
 ## Toolings
