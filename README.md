@@ -50,7 +50,7 @@ To make sure your text layers are populated with the correct texts and the Frame
 Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=billy&types=PRODUCT) to see what other pieces of information you can add to your design.
 
 ```json
-"product": {
+{
   "itemNo": "00263850",
   "itemType": "ART",
   "price": {
