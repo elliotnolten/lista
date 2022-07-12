@@ -6,15 +6,19 @@ export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
     // const [language, setLanguage] = React.useState("us/en/");
-    // const [size, setSize] = React.useState(2);
+    const [size, setSize] = React.useState(0);
     const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
-        const {type, url, targetID} = event.data.pluginMessage;
+        const {type, url, targetID, size} = event.data.pluginMessage;
         const imageUrl = url;
         if (type === "image-url") {
             fetchImageFromURL(`${imageUrl}?f=xxs`, targetID);
+        }
+        if (type == "size") {
+            setSize(size);
+            console.log(size);
         }
     };
 
@@ -27,9 +31,11 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        setEndpoint(`https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&types=PRODUCT`);
         console.log(endpoint);
-    }, [query]);
+        setEndpoint(
+            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${size + 1}&types=PRODUCT`
+        );
+    }, [query, size]);
 
     const handleSearchChange = (event) => {
         setQuery(event.target.value);
