@@ -1,5 +1,5 @@
 function main() {
-    figma.showUI(__html__, {width: 480, height: 480});
+    figma.showUI(__html__, {width: 240, height: 320});
     figma.ui.onmessage = (message) => {
         if (message.type === "get-results") {
             let body = JSON.parse(message.payload);
