@@ -1,7 +1,22 @@
 # LISTA Figma plugin
 Populate your designs with real IKEA product data!
 
-## Installation
+## Installation and build (20 to 30 minutes)
+### 1. Install software
+* [Node.js](https://nodejs.org/en/)
+* [Github Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
+* If you don't have it already create a [Github account](https://github.com/signup)
+
+### 2. Checkout the `master` branch on [elliotnolten/lista](https://github.com/elliotnolten/lista)
+* From dropdown `Code` choose `Open with Github Desktop`
+![Where to find "Open with Github Desktop"](images/github-example.png)
+
+### 3. Build the plugin
+To build the plugin locally on your computer a couple of command lines need be typed. Don't be discouraged though, I'll guide you step-by-step. And it comes down to copy/past 😎
+* If [Step 2](#2-checkout-the-master-branch-on-elliotnoltenlistahttpsgithubcomelliotnoltenlista) was successful you should see `lista` in the Github Desktop app.
+* Select it, `right-click` `lista` and choose `Open in Terminal`
+![How to "Open Terminal"](images/github-desktop-terminal.png)
+* Run `sudo corepack enable`, this enables the next steps and it will ask for your system password (the same you use to log in into your computer)
 * Run `yarn` to install dependencies.
 * Run `yarn build:watch` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `Import plugin from manifest...` and choose `manifest.json` file from this repo.
@@ -9,15 +24,17 @@ Populate your designs with real IKEA product data!
 ---
 
 ## How to use it
-1. Right click on the canvas and select `Plugins` -> `Development` -> `Lista`.
+1. Go to `Plugins` -> `Development` -> `Lista`.
 2. Select your component instances you want to poplulate with IKEA data. Make sure your layers have the correct naming, see [Output and naming layers](#output-and-naming-layers).
 3. Fill in your search query and hit `Submit`.
+4. See that all your text layers and frames with background images are populated with real data 🪄
 
 ---
 
 ## Data
 This plugin fetches data from the [SIK API](https://sik-debug-dot-ikea-search-data.ew.r.appspot.com/index.html).
 This API retrieves product data based on a search query that reflects the actual result that you see on an IKEA [search result page](https://www.ikea.com/nl/en/search/products/?q=billy).
+
 ### Input
 This API can take several parameters to make the API response to fit your needs.
 
@@ -38,14 +55,7 @@ However the LISTA Figma plugin makes some assumptions on what we currently need 
 ### Output and naming layers
 To make sure your text layers are populated with the correct texts and the Frames are filled with the correct images, you need to give your layers the same name as the corresponding properties from the json object prefixed with a `#`.
 
-**Example**
-| Property | Layer name |
-| ----------- | ----------- |
-| `name` | `#name `|
-| `typeName` | `#typeName` |
-| ```"price": {"prefix"}``` | `#price.prefix` |
-
-![data example](/images/data-example.png)
+![From JSON object to layer names to populated text layers and frames with image backgrounds.](/images/data-example.png)
 
 Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=billy&types=PRODUCT) to see what other pieces of information you can add to your design.
 
