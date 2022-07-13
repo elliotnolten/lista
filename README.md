@@ -5,7 +5,8 @@ Populate your designs with real IKEA product data!
 ### 1. Install software
 * [Node.js](https://nodejs.org/en/)
 * [Github Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
-* If you don't have it already create a [Github account](https://github.com/signup)
+* If you don't have it already create a [Github account](https://github.com/signup).
+  > You can set up an account with either your personal or IKEA email.
 
 ### 2. Checkout the `master` branch on [elliotnolten/lista](https://github.com/elliotnolten/lista)
 * From dropdown `Code` choose `Open with Github Desktop`
@@ -16,9 +17,10 @@ To build the plugin locally on your computer a couple of command lines need be t
 * If [Step 2](#2-checkout-the-master-branch-on-elliotnoltenlistahttpsgithubcomelliotnoltenlista) was successful you should see `lista` in the Github Desktop app.
 * Select it, `right-click` `lista` and choose `Open in Terminal`
 ![How to "Open Terminal"](images/github-desktop-terminal.png)
-* Run `sudo corepack enable`, this enables the next steps and it will ask for your system password (the same you use to log in into your computer)
-* Run `yarn` to install dependencies.
-* Run `yarn build:watch` to start webpack in watch mode.
+* Type `sudo corepack enable` and hit `Enter`, this enables the next steps
+  > This will also ask for your system password (the same you use to log in into your computer)
+* Type `yarn` and hit `Enter` to install dependencies.
+* Type `yarn build:watch` and hit `Enter` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `Import plugin from manifest...` and choose `manifest.json` file from this repo.
 
 ---
