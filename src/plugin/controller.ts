@@ -116,16 +116,20 @@ function isImage(node) {
     return node.name.includes("Image");
 }
 
-const gatherValue = (name, row) =>
-    name
-        .replace("#", "")
-        .split(".")
-        .reduce(function (obj, prop) {
-            if (prop.includes("[") && prop.includes("]")) {
-                prop = prop.replace("[").replace("]");
-            }
-            return obj && obj[prop] ? obj[prop] : "";
-        }, row);
+const gatherValue = (name, row) => {
+    const layerName = name.replace("#", "").split(".");
+    let value = layerName.reduce(function (obj, prop) {
+        if (prop.includes("[") && prop.includes("]")) {
+            prop = prop.replace("[").replace("]");
+        }
+        return obj && obj[prop] ? obj[prop] : "";
+    }, row);
+
+    // Handle specific case where we want to have two decimal numbers in the UI
+    if (layerName[0] === "priceNumeral") return Number.parseFloat(value).toFixed(2);
+
+    return value;
+};
 
 async function replaceText(node, content) {
     /**
