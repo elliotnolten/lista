@@ -10,9 +10,13 @@ function shouldReplaceText(node) {
 function isImage(node) {
     // Return TRUE when the node type == "FRAME" AND when the node name includes "#"
     // Otherwise return FALSE
-    if (node.type === "INSTANCE" && (node.name.includes("#homeDelivery") || node.name.includes("#cashAndCarry")))
-        console.log(node);
     return node.name.includes("Image");
+}
+
+function isIntance(node) {
+    if (node.type === "INSTANCE" && (node.name.includes("#homeDelivery") || node.name.includes("#cashAndCarry")))
+        console.log(node?.componentProperties);
+    return node.type === "INSTANCE";
 }
 
 export function loopChildTextNodes(nodes, row) {
