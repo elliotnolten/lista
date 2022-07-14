@@ -1,5 +1,5 @@
 import {postMessage} from "./postMessage";
-import {fillCards, fillImages} from "./fill";
+import {populateCards, populateImages} from "./populate";
 
 function main() {
     figma.showUI(__html__, {width: 240, height: 320});
@@ -17,10 +17,10 @@ function main() {
     figma.ui.onmessage = (message) => {
         if (message.type === "get-results") {
             let data = JSON.parse(message.payload);
-            fillCards(data);
+            populateCards(data);
         }
         if (message.type === "imgData") {
-            fillImages(message);
+            populateImages(message, figma.currentPage.selection.length);
         }
     };
 }

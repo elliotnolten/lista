@@ -1,8 +1,9 @@
 import {loopChildTextNodes, loopChildFrameNodes} from "./utils";
 import {postMessage} from "./postMessage";
+import _ from "lodash";
 
-export async function fillCards(data) {
-    const items = data.response.searchResultPage.products.main.items;
+export async function populateCards(data) {
+    const results = data.response.searchResultPage.products.main.items;
 
     try {
         let nodes = figma.currentPage.selection;
@@ -15,8 +16,13 @@ export async function fillCards(data) {
         let matchingTextNodes = [];
         let matchingFrameNodes = [];
         for (let i = 0; i < nodes.length; i++) {
-            let node = nodes[i];
-            let item = items[i].product;
+            const node = nodes[i];
+            const result = results[i].product;
+            let item;
+            const homeDelivery = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY")?.text;
+            const cashAndCarryStatus = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
+            const {prefix, store} = cashAndCarryStatus;
+            item = {...result, homeDelivery, cashAndCarry: `${prefix}${store}`};
 
             // @ts-ignore
             if (node.children) {
@@ -51,14 +57,13 @@ export async function fillCards(data) {
             let url = gatherValue(name, row);
             postMessage("image-url", url, targetID);
         }
-        figma.notify(`${nodes.length} instance(s) are populated!`);
     } catch (error) {
         console.log(error);
         return true;
     }
 }
 
-export function fillImages(message) {
+export function populateImages(message, nodesLength) {
     const target = figma.currentPage.findOne((node) => node.id === message.targetID);
     const imageHash = figma.createImage(message.data).hash;
     const newFill = {
@@ -69,6 +74,7 @@ export function fillImages(message) {
         imageHash
     };
     target["fills"] = [newFill];
+    figma.notify(`${nodesLength} instance(s) are populated!`);
 }
 
 const gatherValue = (name, row) => {

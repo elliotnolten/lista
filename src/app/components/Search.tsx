@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Button, Input} from "react-figma-ui";
-import {fetchImageFromURL, fetchSIKApi} from "./fetch";
-import {sendMessage} from "./sendMessage";
+import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
+import {sendMessage} from "./SendMessage";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
@@ -27,7 +27,9 @@ export const Search = () => {
     React.useEffect(() => {
         console.log(endpoint);
         setEndpoint(
-            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${size + 1}&types=PRODUCT`
+            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${
+                size + 1
+            }&types=PRODUCT&zip=1013AP&store=088`
         );
     }, [query, size]);
 
