@@ -13,7 +13,7 @@ function isImage(node) {
     return node.name.includes("Image");
 }
 
-function isIntance(node) {
+function isInstance(node) {
     if (node.type === "INSTANCE" && (node.name.includes("#homeDelivery") || node.name.includes("#cashAndCarry")))
         console.log(node?.componentProperties);
     return node.type === "INSTANCE";
@@ -48,4 +48,18 @@ export function loopChildFrameNodes(nodes, row) {
         }
     }
     return imageFrames;
+}
+
+// Loop through instance nodes
+export function loopChildInstanceNodes(nodes, row) {
+    let instances = [];
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (isInstance(node)) instances.push([node.componentProperties, node.name, row]);
+        if (node.children) {
+            const nextInstances = loopChildInstanceNodes(node.children, row);
+            instances = [...instances, ...nextInstances];
+        }
+    }
+    return instances;
 }
