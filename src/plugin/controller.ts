@@ -6,9 +6,11 @@ function main() {
 
     // every time a number of frames/instances are selected, store that number in a constant
     // and send that number to the iframe
+    // @ts-ignore
     postMessage("size", [], figma.currentPage.selection.length);
 
     figma.on("selectionchange", () => {
+        // @ts-ignore
         postMessage("size", [], figma.currentPage.selection.length);
     });
 

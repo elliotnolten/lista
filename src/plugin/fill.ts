@@ -51,8 +51,7 @@ export async function fillCards(data) {
             let url = gatherValue(name, row);
             postMessage("image-url", url, targetID);
         }
-
-        postMessage("done", [], `${nodes.length} instances are populated!`);
+        figma.notify(`${nodes.length} instance(s) are populated!`);
     } catch (error) {
         console.log(error);
         return true;
