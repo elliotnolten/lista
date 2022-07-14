@@ -13,6 +13,12 @@ function isImage(node) {
     return node.name.includes("Image");
 }
 
+function isIntance(node) {
+    if (node.type === "INSTANCE" && (node.name.includes("#homeDelivery") || node.name.includes("#cashAndCarry")))
+        console.log(node?.componentProperties);
+    return node.type === "INSTANCE";
+}
+
 export function loopChildTextNodes(nodes, row) {
     let textMatches = [];
     for (let i = 0; i < nodes.length; i++) {
