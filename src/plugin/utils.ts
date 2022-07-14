@@ -1,5 +1,5 @@
 // Utils
-// Function that loop through selected nodes and child nodes
+// Functions that loop through selected nodes and child nodes
 
 function shouldReplaceText(node) {
     // Return TRUE when the node type == "TEXT" AND when the node name includes "#"

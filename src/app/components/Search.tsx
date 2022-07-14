@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Button, Input} from "react-figma-ui";
 import {fetchImageFromURL, fetchSIKApi} from "./fetch";
+import {sendMessage} from "./sendMessage";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
@@ -39,24 +40,11 @@ export const Search = () => {
         try {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
-            sendJsonMessage("get-results", {response});
+            sendMessage("get-results", {response}, "");
         } catch (error) {
             console.log(error);
         }
         setLoading(false);
-    };
-
-    const sendJsonMessage = (type: string, payload: any) => {
-        parent.postMessage(
-            {
-                pluginMessage: {
-                    type,
-                    name: `name_${type}`,
-                    payload: JSON.stringify(payload)
-                }
-            },
-            "*"
-        );
     };
 
     return (
