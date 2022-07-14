@@ -10,13 +10,12 @@ export const Search = () => {
 
     // Listen to plugin messages
     const MessageListener = (event) => {
-        const {type, url, targetID, size} = event.data.pluginMessage;
-        const imageUrl = url;
+        const {type, payload, message} = event.data.pluginMessage;
         if (type === "image-url") {
-            fetchImageFromURL(`${imageUrl}?f=xxs`, targetID);
+            fetchImageFromURL(`${payload}?f=xxs`, message);
         }
         if (type == "size") {
-            setSize(size);
+            setSize(message);
         }
     };
 

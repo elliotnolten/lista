@@ -1,17 +1,15 @@
+import {postMessage} from "./postMessage";
+
 function main() {
     figma.showUI(__html__, {width: 240, height: 320});
 
     // every time a number of frames/instances are selected, store that number in a constant
     // and send that number to the iframe
-    sendSize(figma.currentPage.selection.length);
+    postMessage("size", [], figma.currentPage.selection.length);
 
     figma.on("selectionchange", () => {
-        sendSize(figma.currentPage.selection.length);
+        postMessage("size", [], figma.currentPage.selection.length);
     });
-
-    function sendSize(size) {
-        figma.ui.postMessage({type: "size", size});
-    }
 
     figma.ui.onmessage = (message) => {
         if (message.type === "get-results") {
@@ -62,12 +60,6 @@ async function fillCards(data) {
                 if (frameChildren.length) {
                     matchingFrameNodes = [...matchingFrameNodes, ...frameChildren];
                 }
-                // figma.ui.postMessage({
-                //     type: "image-url",
-                //     url: item.mainImageUrl,
-                //     // @ts-ignore
-                //     targetID: loopChildFrameNodes(node.children)[0]
-                // });
             }
         }
 
@@ -87,17 +79,10 @@ async function fillCards(data) {
             let name = matchingFrameNodes[i][1].toString();
             let row = matchingFrameNodes[i][2];
             let url = gatherValue(name, row);
-            figma.ui.postMessage({
-                type: "image-url",
-                url,
-                targetID
-            });
+            postMessage("image-url", url, targetID);
         }
 
-        figma.ui.postMessage({
-            type: "done",
-            message: `${nodes.length} instances are populated!`
-        });
+        postMessage("done", [], `${nodes.length} instances are populated!`);
     } catch (error) {
         console.log(error);
         return true;
