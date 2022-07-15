@@ -14,13 +14,13 @@ function main() {
         postMessage("size", [], figma.currentPage.selection.length);
     });
 
-    figma.ui.onmessage = (message) => {
+    figma.ui.onmessage = async (message) => {
         if (message.type === "get-results") {
             let data = JSON.parse(message.payload);
-            populateCards(data);
+            await populateCards(data);
         }
         if (message.type === "imgData") {
-            populateImages(message, figma.currentPage.selection.length);
+            await populateImages(message, figma.currentPage.selection.length);
         }
     };
 }
