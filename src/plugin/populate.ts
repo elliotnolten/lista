@@ -51,7 +51,7 @@ export async function populateCards(data) {
         for (let i = 0; i < matchingTextNodes.length; i++) {
             let node = matchingTextNodes[i][0];
             let row = matchingTextNodes[i][1];
-            let value = gatherValue(node.name, row);
+            let value = gatherValue(node.name, row, false);
             replaceText(node, value);
         }
 
@@ -60,18 +60,22 @@ export async function populateCards(data) {
             let targetID = matchingFrameNodes[i][0];
             let name = matchingFrameNodes[i][1].toString();
             let row = matchingFrameNodes[i][2];
-            let url = gatherValue(name, row);
+            let url = gatherValue(name, row, false);
             postMessage("image-url", url, targetID);
         }
 
         // Loop through instance nodes and change component properties
         for (let i = 0; i < matchingInstanceNodes.length; i++) {
-            let componentProps = matchingInstanceNodes[i][0];
+            let node = matchingInstanceNodes[i][0];
+            let componentProps = node.componentProperties;
+            // let variantProp = _.find(componentProps, obj => obj.type === "VARIANT")
             let name = matchingInstanceNodes[i][1];
             let row = matchingInstanceNodes[i][2];
-            let variant = gatherValue(name, row);
-            if (name.includes("homeDelivery") || name.includes("cashAndCarry"))
-                console.log(componentProps, name, row, variant);
+            let variantValue = gatherValue(name, row, false);
+            let componentKey = gatherValue(name, componentProps, true);
+            // Find a layername that matches the variantProp (status)
+            // and change that prop to the variant name's value
+            node.setProperties({[componentKey]: variantValue});
         }
     } catch (error) {
         console.log(error);
@@ -93,12 +97,13 @@ export function populateImages(message, nodesLength) {
     figma.notify(`${nodesLength} instance(s) are populated!`);
 }
 
-const gatherValue = (name, row) => {
+const gatherValue = (name, row, onlyProp) => {
     const layerName = name.replace("#", "").split(".");
     let value = layerName.reduce(function (obj, prop) {
         if (prop.includes("[") && prop.includes("]")) {
             prop = prop.replace("[").replace("]");
         }
+        if (onlyProp) return prop;
         return obj && obj[prop] ? obj[prop] : "";
     }, row);
 
