@@ -20,7 +20,7 @@ function main() {
             await populateCards(data);
         }
         if (message.type === "imgData") {
-            await populateImages(message, figma.currentPage.selection.length);
+            await populateImages(message);
         }
     };
 }

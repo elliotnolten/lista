@@ -9,7 +9,6 @@ export async function populateCards(data) {
         let nodes = figma.currentPage.selection;
         let nodesLength = nodes.length;
         if (nodesLength > results.length) nodesLength = results.length;
-        console.log(nodesLength, results.length);
 
         if (nodes.length === 0) {
             alert("No Layers Selected");
@@ -24,7 +23,6 @@ export async function populateCards(data) {
 
             // Only read property 'product' if results[i] is not undefined, otherwise return empty object
             let result;
-            console.log(results[i]);
             if (results[i] !== undefined) {
                 result = results[i].product;
             }
@@ -83,9 +81,16 @@ export async function populateCards(data) {
             let row = matchingInstanceNodes[i][2];
             let variantValue = gatherValue(name, row, false);
             let componentKey = gatherValue(name, componentProps, true);
+
+            console.log(name, componentKey, variantValue);
             // Find a layername that matches the variantProp (status)
             // and change that prop to the variant name's value
-            node.setProperties({[componentKey]: variantValue});
+            if (variantValue !== "") {
+                node.setProperties({[componentKey]: variantValue});
+            } else {
+                // If variantValue does not exist, hide node
+                node.opacity = 0;
+            }
         }
     } catch (error) {
         console.log(error);
@@ -93,7 +98,7 @@ export async function populateCards(data) {
     }
 }
 
-export function populateImages(message, nodesLength) {
+export function populateImages(message) {
     const target = figma.currentPage.findOne((node) => node.id === message.targetID);
     const imageHash = figma.createImage(message.data).hash;
     const newFill = {
@@ -105,8 +110,8 @@ export function populateImages(message, nodesLength) {
     };
     target["fills"] = [newFill];
 
-    figma.notify(`${nodesLength} instance(s) are populated!`);
-    postMessage("done", {}, `✅ ${nodesLength} instance(s) are populated!`);
+    figma.notify(`✅ Your designs are populated!`);
+    postMessage("done", {}, `✅ Your designs are populated!`);
 }
 
 const gatherValue = (name, row, onlyProp) => {
