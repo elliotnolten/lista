@@ -7,6 +7,9 @@ export async function populateCards(data) {
 
     try {
         let nodes = figma.currentPage.selection;
+        let nodesLength = nodes.length;
+        if (nodesLength > results.length) nodesLength = results.length;
+        console.log(nodesLength, results.length);
 
         if (nodes.length === 0) {
             alert("No Layers Selected");
@@ -16,9 +19,16 @@ export async function populateCards(data) {
         let matchingTextNodes = [];
         let matchingFrameNodes = [];
         let matchingInstanceNodes = [];
-        for (let i = 0; i < nodes.length; i++) {
+        for (let i = 0; i < nodesLength; i++) {
             const node = nodes[i];
-            const result = results[i].product;
+
+            // Only read property 'product' if results[i] is not undefined, otherwise return empty object
+            let result;
+            console.log(results[i]);
+            if (results[i] !== undefined) {
+                result = results[i].product;
+            }
+
             let item;
             const homeDelivery = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
             const cashAndCarry = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
@@ -94,7 +104,9 @@ export function populateImages(message, nodesLength) {
         imageHash
     };
     target["fills"] = [newFill];
+
     figma.notify(`${nodesLength} instance(s) are populated!`);
+    postMessage("done", {}, `✅ ${nodesLength} instance(s) are populated!`);
 }
 
 const gatherValue = (name, row, onlyProp) => {
