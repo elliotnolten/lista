@@ -1,9 +1,10 @@
 # LISTA Figma plugin
 Populate your designs with real IKEA product data!
+> We found that external colleagues (who don't have an IKEA laptop) are not able to install and run the plugin locally.
 
 ## Installation and build (20 to 30 minutes)
 ### 1. Install software
-* [Node.js](https://nodejs.org/en/)
+* [Node.js](https://nodejs.org/en/). ⚠️ install the `recommended` version
 * [Github Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 * If you don't have it already create a [Github account](https://github.com/signup).
   > You can set up an account with either your personal or IKEA email.
@@ -18,7 +19,10 @@ To build the plugin locally on your computer a couple of command lines need be t
 * Select it, `right-click` `lista` and choose `Open in Terminal`
 ![How to "Open Terminal"](images/github-desktop-terminal.png)
 * Type `sudo corepack enable` and hit `Enter`, this enables the next steps
-  > This will also ask for your system password (the same you use to log in into your computer)
+  > This will also ask for your system password (the same you use to log in into your computer).
+  
+  > And this will install `Command Line Tools`, which are required. This installation will take about **20 minutes**.
+
 * Type `yarn` and hit `Enter` to install dependencies.
 * Type `yarn build:watch` and hit `Enter` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `Import plugin from manifest...` and choose `manifest.json` file from this repo.
@@ -93,7 +97,18 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
   "tag": "NONE",
   "quickFacts": [],
   "features": [],
-  "availability": []
+  "homeDelivery": {
+    "text": "Available for delivery",
+    "status": "HIGH_IN_STOCK"
+  },
+  "cashAndCarry": {
+    "text": "In stock at Lakeside",
+    "status": "HIGH_IN_STOCK"
+  },
+  "badge": {
+    "type": "TOP_SELLER",
+    "text": "Best seller"
+  }
 }
 ```
 
