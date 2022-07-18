@@ -3,11 +3,19 @@ import {Button, Input} from "react-figma-ui";
 import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
 import {sendMessage} from "./SendMessage";
 
+const languages = {
+    gbEN: {
+        lang: "gb/en/",
+        store: "262",
+        zip: "RM20 3WJ"
+    }
+};
+
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
     const [size, setSize] = React.useState(0);
-    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/nl/en/search-result-page");
+    const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
@@ -26,10 +34,12 @@ export const Search = () => {
 
     React.useEffect(() => {
         console.log(endpoint);
+        const selectedLang = "gbEN";
+        const {lang, store, zip} = languages[selectedLang];
         setEndpoint(
-            `https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=${query}&size=${
+            `https://sik.search.blue.cdtapps.com/${lang}search-result-page?q=${query}&size=${
                 size + 1
-            }&types=PRODUCT&zip=1013AP&store=088`
+            }&types=PRODUCT&zip=${zip}&store=${store}`
         );
     }, [query, size]);
 
