@@ -16,12 +16,19 @@ export const Search = () => {
     const [query, setQuery] = React.useState("Billy");
     const [size, setSize] = React.useState(0);
     const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
+    const [done, setDone] = React.useState(false);
+    const [message, setMessage] = React.useState("");
 
     // Listen to plugin messages
     const MessageListener = (event) => {
         const {type, payload, message} = event.data.pluginMessage;
-        if (type === "image-url") fetchImageFromURL(`${payload}?f=xxs`, message);
+        if (type == "image-url") fetchImageFromURL(`${payload}?f=xxs`, message);
         if (type == "size") setSize(message);
+        if (type == "done") {
+            setDone(true);
+            setMessage(message);
+            setLoading(false);
+        }
     };
 
     React.useEffect(() => {
@@ -33,7 +40,6 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        console.log(endpoint);
         const selectedLang = "gbEN";
         const {lang, store, zip} = languages[selectedLang];
         setEndpoint(
@@ -52,11 +58,11 @@ export const Search = () => {
         try {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
-            sendMessage("get-results", {response}, "");
+            // @ts-ignore
+            sendMessage("get-results", {response}, response.searchResultPage.products.badge);
         } catch (error) {
             console.log(error);
         }
-        setLoading(false);
     };
 
     return (
@@ -72,6 +78,18 @@ export const Search = () => {
                     {loading ? "Loading..." : "Submit"}
                 </Button>
             </p>
+            {done && (
+                <ul>
+                    <li>{message}</li>
+                    <li>
+                        📚 Checkout the endpoint here:{" "}
+                        <a href={endpoint} target="_blank">
+                            SIK API
+                        </a>
+                        .
+                    </li>
+                </ul>
+            )}
         </div>
     );
 };
