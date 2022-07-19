@@ -28,13 +28,25 @@ export async function populateCards(data) {
             }
 
             let item;
+
+            // Objects for availability info
             const homeDelivery = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
             const cashAndCarry = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
             const {prefix, store} = cashAndCarry;
+
+            // Objects for quick facts
+            const quickFact1 = result?.quickFacts[0];
+            const quickFact2 = result?.quickFacts[1];
+
+            console.log(quickFact1);
+            console.log(quickFact2);
+
             item = {
                 ...result,
                 homeDelivery: {text: homeDelivery.text, status: homeDelivery.status},
-                cashAndCarry: {text: `${prefix}${store}`, status: cashAndCarry.status}
+                cashAndCarry: {text: `${prefix}${store}`, status: cashAndCarry.status},
+                quickFact1,
+                quickFact2
             };
 
             // @ts-ignore
@@ -89,7 +101,7 @@ export async function populateCards(data) {
                 node.setProperties({[componentKey]: variantValue});
             } else {
                 // If variantValue does not exist, hide node
-                node.opacity = 0;
+                node.visible = false;
             }
         }
     } catch (error) {
