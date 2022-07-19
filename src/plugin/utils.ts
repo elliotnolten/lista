@@ -14,7 +14,6 @@ function isImage(node) {
 }
 
 function isInstance(node) {
-    node.type == "INSTANCE" && node.name.includes("#") && console.log(node.name, node.parent.visible);
     return (
         node.type === "INSTANCE" &&
         node.name.includes("#") &&
