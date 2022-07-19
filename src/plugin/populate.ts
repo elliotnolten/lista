@@ -1,4 +1,4 @@
-import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes} from "./utils";
+import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes, isEmpty} from "./utils";
 import {postMessage} from "./postMessage";
 import _ from "lodash";
 
@@ -28,23 +28,35 @@ export async function populateCards(data) {
             }
 
             let item;
+            console.log(result);
 
-            // Objects for availability info
-            const homeDelivery = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
-            const cashAndCarry = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
-            const {prefix, store} = cashAndCarry;
+            // Extra data points for onlineSellable products
+            let homeDelivery = {};
+            let cashAndCarry = {};
+            let quickFact1 = {};
+            let quickFact2 = {};
 
-            // Objects for quick facts
-            const quickFact1 = result?.quickFacts[0];
-            const quickFact2 = result?.quickFacts[1];
+            // If item is onlineSellable
+            if (result.onlineSellable) {
+                // Objects for availability info
+                const homeDeliveryObj = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
+                const cashAndCarryObj = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
+                const {status, prefix, store, suffix} = cashAndCarryObj;
 
-            console.log(quickFact1);
-            console.log(quickFact2);
+                homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
+                cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+
+                // Objects for quick facts
+                quickFact1 = result?.quickFacts[0];
+                quickFact2 = result?.quickFacts[1];
+
+                console.log(`cash and carry, ${result.name}: ${status}, ${prefix} ${store} ${suffix}`);
+            }
 
             item = {
                 ...result,
-                homeDelivery: {text: homeDelivery.text, status: homeDelivery.status},
-                cashAndCarry: {text: `${prefix}${store}`, status: cashAndCarry.status},
+                homeDelivery,
+                cashAndCarry,
                 quickFact1,
                 quickFact2
             };
@@ -93,15 +105,17 @@ export async function populateCards(data) {
             let row = matchingInstanceNodes[i][2];
             let variantValue = gatherValue(name, row, false);
             let componentKey = gatherValue(name, componentProps, true);
+            // console.log(`variantValue is empty: ${variantValue === ""}`)
+            // console.log(`componentKey: ${componentKey}`)
 
-            console.log(name, componentKey, variantValue);
+            // console.log(name, componentKey, variantValue);
             // Find a layername that matches the variantProp (status)
             // and change that prop to the variant name's value
-            if (variantValue !== "") {
-                node.setProperties({[componentKey]: variantValue});
-            } else {
-                // If variantValue does not exist, hide node
+            // If variantvalue is empty, hide node
+            if (variantValue === "") {
                 node.visible = false;
+            } else {
+                node.setProperties({[componentKey]: variantValue});
             }
         }
     } catch (error) {

@@ -75,9 +75,10 @@ export const Search = () => {
                 onChange={handleSearchChange}
                 placeholder="What are you looking for?"
                 iconProps={{iconName: "search"}}
+                disabled={!done && loading}
             />
             <p>
-                <Button onClick={handleSubmit} tint="primary">
+                <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
                     {loading ? "Loading..." : "Submit"}
                 </Button>
             </p>

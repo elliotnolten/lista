@@ -67,3 +67,9 @@ export function loopChildInstanceNodes(nodes, row) {
     }
     return instances;
 }
+
+// Check whether an object is empty
+export const isEmpty = (obj) => {
+    console.log(obj);
+    return Object.keys(obj).length === 0;
+};
