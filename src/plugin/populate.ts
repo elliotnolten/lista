@@ -1,4 +1,4 @@
-import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes, isEmpty} from "./utils";
+import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes} from "./utils";
 import {postMessage} from "./postMessage";
 import _ from "lodash";
 

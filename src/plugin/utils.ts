@@ -1,7 +1,7 @@
 // Utils
 // Functions that loop through selected nodes and child nodes
 
-function shouldReplaceText(node) {
+function isText(node) {
     // Return TRUE when the node type == "TEXT" AND when the node name includes "#"
     // Otherwise return FALSE
     return node.type === "TEXT" && node.name.includes("#") && node.visible && node.parent.visible;
@@ -27,7 +27,7 @@ export function loopChildTextNodes(nodes, row) {
     let textMatches = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        if (shouldReplaceText(node)) {
+        if (isText(node)) {
             textMatches.push([node, row]);
         }
         if (node.children) {
@@ -67,9 +67,3 @@ export function loopChildInstanceNodes(nodes, row) {
     }
     return instances;
 }
-
-// Check whether an object is empty
-export const isEmpty = (obj) => {
-    console.log(obj);
-    return Object.keys(obj).length === 0;
-};
