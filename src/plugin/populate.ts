@@ -48,9 +48,10 @@ export async function populateCards(data) {
                 // Objects for quick facts
                 quickFact1 = result?.quickFacts[0];
                 quickFact2 = result?.quickFacts[1];
-
-                console.log(`cash and carry, ${result.name}: ${status}, ${prefix} ${store} ${suffix}`);
             }
+
+            // If there's no contextualImage, fallback to main image
+            if (result.contextualImageUrl === undefined) result.contextualImageUrl = result.mainImageUrl;
 
             item = {
                 ...result,
