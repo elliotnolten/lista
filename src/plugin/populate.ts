@@ -28,13 +28,36 @@ export async function populateCards(data) {
             }
 
             let item;
-            const homeDelivery = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
-            const cashAndCarry = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
-            const {prefix, store} = cashAndCarry;
+
+            // Extra data points for onlineSellable products
+            let homeDelivery = {};
+            let cashAndCarry = {};
+            let quickFact1 = {};
+            let quickFact2 = {};
+
+            // If item is onlineSellable
+            if (result.onlineSellable) {
+                // Objects for availability info
+                const homeDeliveryObj = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
+                const cashAndCarryObj = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
+                const {status, prefix, store, suffix} = cashAndCarryObj;
+
+                homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
+                cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+
+                // Objects for quick facts
+                quickFact1 = result?.quickFacts[0];
+                quickFact2 = result?.quickFacts[1];
+
+                console.log(`cash and carry, ${result.name}: ${status}, ${prefix} ${store} ${suffix}`);
+            }
+
             item = {
                 ...result,
-                homeDelivery: {text: homeDelivery.text, status: homeDelivery.status},
-                cashAndCarry: {text: `${prefix}${store}`, status: cashAndCarry.status}
+                homeDelivery,
+                cashAndCarry,
+                quickFact1,
+                quickFact2
             };
 
             // @ts-ignore
@@ -75,21 +98,19 @@ export async function populateCards(data) {
         // Loop through instance nodes and change component properties
         for (let i = 0; i < matchingInstanceNodes.length; i++) {
             let node = matchingInstanceNodes[i][0];
-            let componentProps = node.componentProperties;
-            // let variantProp = _.find(componentProps, obj => obj.type === "VARIANT")
+            let componentProperties = node.componentProperties;
             let name = matchingInstanceNodes[i][1];
             let row = matchingInstanceNodes[i][2];
             let variantValue = gatherValue(name, row, false);
-            let componentKey = gatherValue(name, componentProps, true);
+            let componentProp = gatherValue(name, componentProperties, true);
 
-            console.log(name, componentKey, variantValue);
-            // Find a layername that matches the variantProp (status)
-            // and change that prop to the variant name's value
-            if (variantValue !== "") {
-                node.setProperties({[componentKey]: variantValue});
+            // If variantvalue is empty, hide node
+            if (variantValue === "") {
+                node.visible = false;
+                // Else, find a layername that matches the variantProp
+                // and change that prop to the variant name's value
             } else {
-                // If variantValue does not exist, hide node
-                node.opacity = 0;
+                node.setProperties({[componentProp]: variantValue});
             }
         }
     } catch (error) {

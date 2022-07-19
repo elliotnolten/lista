@@ -1,27 +1,33 @@
 // Utils
 // Functions that loop through selected nodes and child nodes
 
-function shouldReplaceText(node) {
+function isText(node) {
     // Return TRUE when the node type == "TEXT" AND when the node name includes "#"
     // Otherwise return FALSE
-    return node.type === "TEXT" && node.name.includes("#");
+    return node.type === "TEXT" && node.name.includes("#") && node.visible && node.parent.visible;
 }
 
 function isImage(node) {
     // Return TRUE when the node type == "FRAME" AND when the node name includes "#"
     // Otherwise return FALSE
-    return node.name.includes("Image") && node.name.includes("#");
+    return node.name.includes("Image") && node.name.includes("#") && node.visible && node.parent.visible;
 }
 
 function isInstance(node) {
-    return node.type === "INSTANCE" && node.name.includes("#") && !node.name.includes("Image");
+    return (
+        node.type === "INSTANCE" &&
+        node.name.includes("#") &&
+        !node.name.includes("Image") &&
+        node.visible &&
+        node.parent.visible
+    );
 }
 
 export function loopChildTextNodes(nodes, row) {
     let textMatches = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        if (shouldReplaceText(node)) {
+        if (isText(node)) {
             textMatches.push([node, row]);
         }
         if (node.children) {

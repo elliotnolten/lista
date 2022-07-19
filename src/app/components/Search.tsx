@@ -25,9 +25,11 @@ export const Search = () => {
         if (type == "image-url") fetchImageFromURL(`${payload}?f=xxs`, message);
         if (type == "size") setSize(message);
         if (type == "done") {
-            setDone(true);
-            setMessage(message);
-            setLoading(false);
+            setTimeout(() => {
+                setDone(true);
+                setMessage(message);
+                setLoading(false);
+            }, 2000);
         }
     };
 
@@ -55,6 +57,7 @@ export const Search = () => {
 
     const handleSubmit = async () => {
         setLoading(true);
+        setDone(false);
         try {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
@@ -72,13 +75,15 @@ export const Search = () => {
                 onChange={handleSearchChange}
                 placeholder="What are you looking for?"
                 iconProps={{iconName: "search"}}
+                disabled={!done && loading}
             />
             <p>
-                <Button onClick={handleSubmit} tint="primary">
+                <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
                     {loading ? "Loading..." : "Submit"}
                 </Button>
             </p>
-            {done && (
+            {!done && loading && <p>...loading</p>}
+            {done && !loading && (
                 <ul>
                     <li>{message}</li>
                     <li>
