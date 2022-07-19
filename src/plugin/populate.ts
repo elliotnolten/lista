@@ -28,7 +28,6 @@ export async function populateCards(data) {
             }
 
             let item;
-            console.log(result);
 
             // Extra data points for onlineSellable products
             let homeDelivery = {};
@@ -99,23 +98,19 @@ export async function populateCards(data) {
         // Loop through instance nodes and change component properties
         for (let i = 0; i < matchingInstanceNodes.length; i++) {
             let node = matchingInstanceNodes[i][0];
-            let componentProps = node.componentProperties;
-            // let variantProp = _.find(componentProps, obj => obj.type === "VARIANT")
+            let componentProperties = node.componentProperties;
             let name = matchingInstanceNodes[i][1];
             let row = matchingInstanceNodes[i][2];
             let variantValue = gatherValue(name, row, false);
-            let componentKey = gatherValue(name, componentProps, true);
-            // console.log(`variantValue is empty: ${variantValue === ""}`)
-            // console.log(`componentKey: ${componentKey}`)
+            let componentProp = gatherValue(name, componentProperties, true);
 
-            // console.log(name, componentKey, variantValue);
-            // Find a layername that matches the variantProp (status)
-            // and change that prop to the variant name's value
             // If variantvalue is empty, hide node
             if (variantValue === "") {
                 node.visible = false;
+                // Else, find a layername that matches the variantProp
+                // and change that prop to the variant name's value
             } else {
-                node.setProperties({[componentKey]: variantValue});
+                node.setProperties({[componentProp]: variantValue});
             }
         }
     } catch (error) {
