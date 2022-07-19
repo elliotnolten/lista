@@ -2,7 +2,7 @@ import {postMessage} from "./postMessage";
 import {populateCards, populateImages} from "./populate";
 
 function main() {
-    figma.showUI(__html__, {width: 240, height: 320});
+    figma.showUI(__html__, {width: 320, height: 480});
 
     // every time a number of frames/instances are selected, store that number in a constant
     // and send that number to the iframe

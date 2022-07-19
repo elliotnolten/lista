@@ -1,15 +1,22 @@
 import * as React from "react";
-import {Button, Input} from "react-figma-ui";
+import {Button, Input, SelectMenu, SelectMenuOption} from "react-figma-ui";
 import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
 import {sendMessage} from "./SendMessage";
 
-const languages = {
-    gbEN: {
-        lang: "gb/en/",
+const languages = [
+    {
+        label: "🇬🇧 GB-EN",
+        value: "gb/en/",
         store: "262",
         zip: "RM20 3WJ"
+    },
+    {
+        label: "🇳🇱 NL-NL",
+        value: "nl/nl/",
+        store: "088",
+        zip: "1019 GM"
     }
-};
+];
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
@@ -42,10 +49,10 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        const selectedLang = "gbEN";
-        const {lang, store, zip} = languages[selectedLang];
+        // const selectedLang = "gbEN";
+        const {value, store, zip} = languages[0];
         setEndpoint(
-            `https://sik.search.blue.cdtapps.com/${lang}search-result-page?q=${query}&size=${
+            `https://sik.search.blue.cdtapps.com/${value}search-result-page?q=${query}&size=${
                 size + 1
             }&types=PRODUCT&zip=${zip}&store=${store}`
         );
@@ -53,6 +60,10 @@ export const Search = () => {
 
     const handleSearchChange = (event) => {
         setQuery(event.target.value);
+    };
+
+    const handleSelect = (event) => {
+        console.log(event);
     };
 
     const handleSubmit = async () => {
@@ -76,6 +87,16 @@ export const Search = () => {
                 placeholder="What are you looking for?"
                 iconProps={{iconName: "search"}}
                 disabled={!done && loading}
+            />
+            <SelectMenu
+                value="gb/en/"
+                options={languages}
+                render={({value, label}) => (
+                    <SelectMenuOption value={value} key={value}>
+                        {label}
+                    </SelectMenuOption>
+                )}
+                onChange={handleSelect}
             />
             <p>
                 <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
