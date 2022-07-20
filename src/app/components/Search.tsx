@@ -52,23 +52,27 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        // _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
-        // const selectedLang = "gbEN";
-        console.log(
-            `find store and zip for ${lang.value}`,
-            _.find(languages, (obj) => obj.value === lang.value)
-        );
-        const {store, zip} = _.find(languages, (obj) => obj.value === lang.value;
-        setEndpoint(
-            `https://sik.search.blue.cdtapps.com/${lang.value}search-result-page?q=${query}&size=${
-                size + 1
-            }&types=PRODUCT&zip=${zip}&store=${store}`
-        );
-    }, [query, size]);
+        const selectedLang = _.find(languages, (obj) => obj.value === lang.value);
+        const {store, zip, value} = selectedLang;
+        const newSize = size + 1;
+        let params = {
+            q: query,
+            size: newSize,
+            types: "PRODUCT",
+            zip,
+            store
+        };
 
-    const handleSearchChange = (value) => {
-        setQuery(value);
-    };
+        const queryString = Object.keys(params)
+            .map((key) => {
+                console.log(key, params[key]);
+                const value = encodeURIComponent(params[key]);
+                if (params[key]) return `${key}=${value}`;
+            })
+            .join("&");
+
+        setEndpoint(`https://sik.search.blue.cdtapps.com/${value}search-result-page?q=${queryString}`);
+    }, [query, size]);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -76,22 +80,18 @@ export const Search = () => {
         try {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
-            // @ts-ignore
-            sendMessage("get-results", {response}, response.searchResultPage.products.badge);
+            sendMessage("get-results", {response}, "");
         } catch (error) {
             console.log(error);
         }
     };
 
-    console.log(lang);
-
     return (
         <div>
             <Input
                 defaultValue={query}
-                onChange={handleSearchChange}
+                onChange={(value) => setQuery(value)}
                 placeholder="What are you looking for?"
-                // iconProps={{iconName: "search"}}
                 icon="search"
                 isDisabled={!done && loading}
             />
