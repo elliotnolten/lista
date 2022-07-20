@@ -1,13 +1,1 @@
 @import url(../../../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css);
-
-body {
-    padding: 2rem;
-    font-size: 0.75rem;
-}
-
-ul,
-li {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
