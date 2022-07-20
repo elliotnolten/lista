@@ -49,7 +49,9 @@ However the LISTA Figma plugin makes some assumptions on what we currently need 
 **Default values**
 | Key | Description |Type | Value |
 | ----------- | ----------- | ----------- | ----------- |
-| language | This affects the language of all the data. | `String` | "nl/en/" |
+| language | This affects the language of all the data. | `String` | "gb/en/" |
+| zip | This shows home delivery statuses. | `String` | "RM20 3WJ" |
+| store | This show store stock statuses. | `String` | "262" / "Lakeside" |
 | types | The API can also output "CONTENT", "STORE", etc. | `String` | "PRODUCT" |
 
 **Variables**
