@@ -36,13 +36,28 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
+        // params dependent on selected language
         const {value, store, zip} = lang;
-        setEndpoint(
-            `https://sik.search.blue.cdtapps.com/${value}search-result-page?q=${query}&size=${
-                size + 1
-            }&types=PRODUCT&zip=${zip}&store=${store}`
-        );
-    }, [query, size]);
+
+        // All params
+        const params = {
+            q: query,
+            store,
+            zip,
+            size: size + 1,
+            types: "PRODUCT"
+        };
+
+        const queryString = Object.keys(params)
+            .map((key) => {
+                if (params[key]) return `${key}=${params[key]}`;
+            })
+            .join("&");
+
+        console.log(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
+
+        setEndpoint(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
+    }, [query, size, lang]);
 
     const handleSubmit = async () => {
         setLoading(true);

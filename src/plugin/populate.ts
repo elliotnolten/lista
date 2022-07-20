@@ -42,8 +42,9 @@ export async function populateCards(data) {
                 const cashAndCarryObj = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
                 const {status, prefix, store, suffix} = cashAndCarryObj;
 
-                homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
-                cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+                if (homeDeliveryObj !== undefined)
+                    homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
+                if (cashAndCarryObj !== undefined) cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
 
                 // Objects for quick facts
                 quickFact1 = result?.quickFacts[0];
