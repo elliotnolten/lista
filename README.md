@@ -49,7 +49,9 @@ However the LISTA Figma plugin makes some assumptions on what we currently need 
 **Default values**
 | Key | Description |Type | Value |
 | ----------- | ----------- | ----------- | ----------- |
-| language | This affects the language of all the data. | `String` | "nl/en/" |
+| language | This affects the language of all the data. | `String` | "gb/en/" |
+| zip | This shows home delivery statuses. | `String` | "RM20 3WJ" |
+| store | This show store stock statuses. | `String` | "262" / "Lakeside" |
 | types | The API can also output "CONTENT", "STORE", etc. | `String` | "PRODUCT" |
 
 **Variables**
@@ -84,6 +86,7 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
   "name": "BILLY",
   "typeName": "Bookcase",
   "itemMeasureReferenceText": "80x28x202 cm",
+  "productDescription": "Bookcase, 80x28x202 cm",
   "mainImageUrl": "https://www.ikea.com/nl/en/images/products/billy-bookcase-white__0625599_pe692385_s5.jpg",
   "pipUrl": "https://www.ikea.com/nl/en/p/billy-bookcase-white-00263850/",
   "id": "00263850",
