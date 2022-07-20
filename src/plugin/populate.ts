@@ -53,8 +53,14 @@ export async function populateCards(data) {
             // If there's no contextualImage, fallback to main image
             if (result.contextualImageUrl === undefined) result.contextualImageUrl = result.mainImageUrl;
 
+            // Add prop for productDescription
+            const productDescription = `${result.typeName} ${
+                result?.itemMeasureReferenceText !== "" ? `, ${result.itemMeasureReferenceText}` : ""
+            }`;
+
             item = {
                 ...result,
+                productDescription,
                 homeDelivery,
                 cashAndCarry,
                 quickFact1,

@@ -84,6 +84,7 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
   "name": "BILLY",
   "typeName": "Bookcase",
   "itemMeasureReferenceText": "80x28x202 cm",
+  "productDescription": "Bookcase, 80x28x202 cm",
   "mainImageUrl": "https://www.ikea.com/nl/en/images/products/billy-bookcase-white__0625599_pe692385_s5.jpg",
   "pipUrl": "https://www.ikea.com/nl/en/p/billy-bookcase-white-00263850/",
   "id": "00263850",
