@@ -6,7 +6,7 @@ declare function require(path: string): any;
 
 const App = ({}) => {
     return (
-        <div style={{padding: "0.75rem"}}>
+        <div>
             <img src={require("../assets/logo.svg")} />
             <Search />
         </div>

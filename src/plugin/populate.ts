@@ -132,7 +132,7 @@ export function populateImages(message) {
     };
     target["fills"] = [newFill];
 
-    figma.notify(`✅ Your designs are populated!`);
+    figma.notify(`✅ Your designs are populated!`, {timeout: 1000});
     postMessage("done", {}, `✅ Your designs are populated!`);
 }
 
