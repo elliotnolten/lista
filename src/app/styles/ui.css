@@ -1,6 +1,6 @@
+@import url(../../../node_modules/react-figma-plugin-ds/figma-plugin-ds.css);
 body {
-    padding: 2rem;
-    font-size: 0.75rem;
+    padding: 0.75rem;
 }
 
 ul,
