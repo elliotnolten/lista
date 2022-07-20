@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Button, Input} from "react-figma-ui";
+import {Button, Input} from "react-figma-plugin-ds";
 import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
 import {sendMessage} from "./SendMessage";
 
@@ -51,10 +51,6 @@ export const Search = () => {
         );
     }, [query, size]);
 
-    const handleSearchChange = (event) => {
-        setQuery(event.target.value);
-    };
-
     const handleSubmit = async () => {
         setLoading(true);
         setDone(false);
@@ -71,20 +67,23 @@ export const Search = () => {
     return (
         <div>
             <Input
-                value={query}
-                onChange={handleSearchChange}
+                // value={query}
+                defaultValue={query}
+                onChange={(value) => setQuery(value)}
                 placeholder="What are you looking for?"
-                iconProps={{iconName: "search"}}
-                disabled={!done && loading}
+                // iconProps={{iconName: "search"}}
+                icon="Search"
+                // disabled={!done && loading}
+                isDisabled={!done && loading}
             />
             <p>
                 <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
                     {loading ? "Loading..." : "Submit"}
                 </Button>
             </p>
-            {!done && loading && <p>...loading</p>}
+            {!done && loading && <p className="type type--small">...loading</p>}
             {done && !loading && (
-                <ul>
+                <ul className="type type--small">
                     <li>{message}</li>
                     <li>
                         📚 Checkout the endpoint here:{" "}
