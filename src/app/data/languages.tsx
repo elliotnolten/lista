@@ -2,14 +2,14 @@ export const languages = [
     {
         value: "gb/en/",
         title: "🇬🇧 GB-EN",
-        label: "🇬🇧 United Kingdom - English",
+        label: "🇬🇧 UK - English",
         store: "262",
         zip: "RM20 3WJ"
     },
     {
         value: "us/en/",
         title: "🇺🇸 US-EN",
-        label: "🇺🇸 United States - English",
+        label: "🇺🇸 US - English",
         store: "257",
         zip: "30363"
     },
@@ -68,12 +68,12 @@ export const languages = [
         label: "🇰🇷 한국어 - Korean",
         store: "522",
         zip: "10551"
-    },
-    {
-        value: "eg/ar/",
-        title: "🇪🇬 EG-AR",
-        label: "🇪🇬 العربية - Arabic",
-        store: "631",
-        zip: "الخط الساخن: 16576"
     }
+    // {
+    //     value: "eg/ar/",
+    //     title: "🇪🇬 EG-AR",
+    //     label: "🇪🇬 العربية - Arabic",
+    //     store: "631",
+    //     zip: "الخط الساخن: 16576"
+    // }
 ];

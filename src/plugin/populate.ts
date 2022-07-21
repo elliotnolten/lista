@@ -130,20 +130,26 @@ export async function populateCards(data) {
     }
 }
 
-export function populateImages(message) {
-    const target = figma.currentPage.findOne((node) => node.id === message.targetID);
-    const imageHash = figma.createImage(message.data).hash;
-    const newFill = {
-        type: "IMAGE",
-        opacity: 1,
-        blendMode: "NORMAL",
-        scaleMode: "FILL",
-        imageHash
+export async function populateImages(message) {
+    const populate = () => {
+        const target = figma.currentPage.findOne((node) => node.id === message.targetID);
+        const imageHash = figma.createImage(message.data).hash;
+        const newFill = {
+            type: "IMAGE",
+            opacity: 1,
+            blendMode: "NORMAL",
+            scaleMode: "FILL",
+            imageHash
+        };
+        target["fills"] = [newFill];
     };
-    target["fills"] = [newFill];
 
-    figma.notify(`✅ Your designs are populated!`);
-    postMessage("done", {}, `✅ Your designs are populated!`);
+    await populate();
+
+    setTimeout(() => {
+        figma.notify(`Your designs are populated!`);
+        postMessage("done", {}, `Your designs are populated!`);
+    }, 1000);
 }
 
 const gatherValue = (name, row, onlyProp) => {
