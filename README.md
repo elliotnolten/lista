@@ -11,13 +11,13 @@ Populate your designs with real IKEA product data!
 
 ### 2. Checkout the `master` branch on [elliotnolten/lista](https://github.com/elliotnolten/lista)
 * From dropdown `Code` choose `Open with Github Desktop`
-![Where to find "Open with Github Desktop"](images/github-example.png)
+![Where to find "Open with Github Desktop"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-example.png)
 
 ### 3. Build the plugin
 To build the plugin locally on your computer a couple of command lines need be typed. Don't be discouraged though, I'll guide you step-by-step. And it comes down to copy/past 😎
 * If [Step 2](#2-checkout-the-master-branch-on-elliotnoltenlistahttpsgithubcomelliotnoltenlista) was successful you should see `lista` in the Github Desktop app.
 * Select it, `right-click` `lista` and choose `Open in Terminal`
-![How to "Open Terminal"](images/github-desktop-terminal.png)
+![How to "Open Terminal"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-desktop-terminal.png)
 * Type `sudo corepack enable` and hit `Enter`, this enables the next steps
   > This will also ask for your system password (the same you use to log in into your computer).
   
@@ -63,7 +63,7 @@ However the LISTA Figma plugin makes some assumptions on what we currently need 
 ### Output and naming layers
 To make sure your text layers are populated with the correct texts and the Frames are filled with the correct images, you need to give your layers the same name as the corresponding properties from the json object prefixed with a `#`.
 
-![From JSON object to layer names to populated text layers and frames with image backgrounds.](/images/data-example.png)
+![From JSON object to layer names to populated text layers and frames with image backgrounds.](https://raw.githubusercontent.com/elliotnolten/lista/master/images/data-example.png)
 
 Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/search-result-page?q=billy&types=PRODUCT) to see what other pieces of information you can add to your design.
 
