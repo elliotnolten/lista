@@ -50,7 +50,7 @@ export const Search = () => {
 
         const queryString = Object.keys(params)
             .map((key) => {
-                if (params[key]) return `${key}=${params[key]}`;
+                if (params[key]) return `${key}=${encodeURI(params[key])}`;
             })
             .join("&");
 
