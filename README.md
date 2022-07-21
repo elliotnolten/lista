@@ -11,13 +11,15 @@ Populate your designs with real IKEA product data!
 
 ### 2. Checkout the `master` branch on [elliotnolten/lista](https://github.com/elliotnolten/lista)
 * From dropdown `Code` choose `Open with Github Desktop`
-![Where to find "Open with Github Desktop"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-example.png)
+
+  ![Where to find "Open with Github Desktop"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-example.png)
 
 ### 3. Build the plugin
 To build the plugin locally on your computer a couple of command lines need be typed. Don't be discouraged though, I'll guide you step-by-step. And it comes down to copy/past 😎
 * If [Step 2](#2-checkout-the-master-branch-on-elliotnoltenlistahttpsgithubcomelliotnoltenlista) was successful you should see `lista` in the Github Desktop app.
 * Select it, `right-click` `lista` and choose `Open in Terminal`
-![How to "Open Terminal"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-desktop-terminal.png)
+
+  ![How to "Open Terminal"](https://raw.githubusercontent.com/elliotnolten/lista/master/images/github-desktop-terminal.png)
 * Type `sudo corepack enable` and hit `Enter`, this enables the next steps
   > This will also ask for your system password (the same you use to log in into your computer).
   
