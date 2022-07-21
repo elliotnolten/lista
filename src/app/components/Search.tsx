@@ -1,14 +1,16 @@
 import * as React from "react";
-import {Button, Input, Select} from "react-figma-plugin-ds";
+import {Button, Input, Select, Icon} from "react-figma-plugin-ds";
 import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
-import {sendMessage} from "./SendMessage";
-import {languages} from "./languages";
+import {sendMessage} from "../utils/sendMessage";
+import {languages} from "../data/languages";
+import {sortOrders} from "../data/sortOrders";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
     const [size, setSize] = React.useState(0);
     const [lang, setLang] = React.useState(languages[0]);
+    const [sortOrder, setSortOrder] = React.useState(sortOrders[0]);
     const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
     const [done, setDone] = React.useState(false);
     const [message, setMessage] = React.useState("");
@@ -19,11 +21,9 @@ export const Search = () => {
         if (type == "image-url") fetchImageFromURL(`${payload}?f=xxs`, message);
         if (type == "size") setSize(message);
         if (type == "done") {
-            setTimeout(() => {
-                setDone(true);
-                setMessage(message);
-                setLoading(false);
-            }, 2000);
+            setMessage(message);
+            setDone(true);
+            setLoading(false);
         }
     };
 
@@ -38,6 +38,7 @@ export const Search = () => {
     React.useEffect(() => {
         // params dependent on selected language
         const {value, store, zip} = lang;
+        const sort = sortOrder.value;
 
         // All params
         const params = {
@@ -45,7 +46,8 @@ export const Search = () => {
             store,
             zip,
             size: size + 1,
-            types: "PRODUCT"
+            types: "PRODUCT",
+            sort
         };
 
         const queryString = Object.keys(params)
@@ -57,7 +59,7 @@ export const Search = () => {
         console.log(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
 
         setEndpoint(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
-    }, [query, size, lang]);
+    }, [query, size, lang, sortOrder]);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -73,38 +75,60 @@ export const Search = () => {
     };
 
     return (
-        <div>
+        <div className="form-fields">
             <Input
                 // value={query}
                 defaultValue={query}
                 onChange={(value) => setQuery(value)}
                 placeholder="What are you looking for?"
-                // iconProps={{iconName: "search"}}
                 icon="Search"
-                // disabled={!done && loading}
+                iconColor="black"
                 isDisabled={!done && loading}
             />
-            <Select
-                defaultValue={lang.value}
-                options={languages}
-                onChange={(value) => setLang(value)}
-                isDisabled={!done && loading}
-            />
+            <div className="selects">
+                <Select
+                    className="select"
+                    defaultValue={lang.value}
+                    options={languages}
+                    onChange={(value) => setLang(value)}
+                    isDisabled={!done && loading}
+                />
+                <div className="select">
+                    <Icon className="icon" color="black8" name="up-down" onClick={null} string="Sort order" />
+                    <Select
+                        className="sort-order"
+                        defaultValue={sortOrder.value}
+                        options={sortOrders}
+                        onChange={(value) => setSortOrder(value)}
+                        isDisabled={!done && loading}
+                    />
+                </div>
+            </div>
             <p>
                 <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
                     {loading ? "Loading..." : "Submit"}
                 </Button>
             </p>
-            {!done && loading && <p className="type type--small">...loading</p>}
+            {!done && loading && (
+                <div className="spinner-container">
+                    <span className="loader"></span>
+                </div>
+            )}
             {done && !loading && (
-                <ul className="type type--small">
-                    <li>{message}</li>
+                <ul className="type type--small messages">
                     <li>
-                        📚 Checkout the endpoint here:{" "}
-                        <a href={endpoint} target="_blank">
-                            SIK API
-                        </a>
-                        .
+                        <Icon className="icon" color="black8" name="check" onClick={null} string="Success" />
+                        {message}
+                    </li>
+                    <li>
+                        <Icon className="icon" color="black8" name="library" onClick={null} string="API" />{" "}
+                        <span>
+                            Checkout the endpoint here:{" "}
+                            <a href={endpoint} target="_blank">
+                                SIK API
+                            </a>
+                            .
+                        </span>
                     </li>
                 </ul>
             )}
