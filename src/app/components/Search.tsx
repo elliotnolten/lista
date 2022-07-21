@@ -1,20 +1,14 @@
 import * as React from "react";
-import {Button, Input} from "react-figma-plugin-ds";
+import {Button, Input, Select} from "react-figma-plugin-ds";
 import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
 import {sendMessage} from "./SendMessage";
-
-const languages = {
-    gbEN: {
-        lang: "gb/en/",
-        store: "262",
-        zip: "RM20 3WJ"
-    }
-};
+import {languages} from "./languages";
 
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
     const [size, setSize] = React.useState(0);
+    const [lang, setLang] = React.useState(languages[0]);
     const [endpoint, setEndpoint] = React.useState("https://sik.search.blue.cdtapps.com/gb/en/search-result-page");
     const [done, setDone] = React.useState(false);
     const [message, setMessage] = React.useState("");
@@ -42,14 +36,28 @@ export const Search = () => {
     }, []);
 
     React.useEffect(() => {
-        const selectedLang = "gbEN";
-        const {lang, store, zip} = languages[selectedLang];
-        setEndpoint(
-            `https://sik.search.blue.cdtapps.com/${lang}search-result-page?q=${query}&size=${
-                size + 1
-            }&types=PRODUCT&zip=${zip}&store=${store}`
-        );
-    }, [query, size]);
+        // params dependent on selected language
+        const {value, store, zip} = lang;
+
+        // All params
+        const params = {
+            q: query,
+            store,
+            zip,
+            size: size + 1,
+            types: "PRODUCT"
+        };
+
+        const queryString = Object.keys(params)
+            .map((key) => {
+                if (params[key]) return `${key}=${encodeURI(params[key])}`;
+            })
+            .join("&");
+
+        console.log(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
+
+        setEndpoint(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
+    }, [query, size, lang]);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -74,6 +82,12 @@ export const Search = () => {
                 // iconProps={{iconName: "search"}}
                 icon="Search"
                 // disabled={!done && loading}
+                isDisabled={!done && loading}
+            />
+            <Select
+                defaultValue={lang.value}
+                options={languages}
+                onChange={(value) => setLang(value)}
                 isDisabled={!done && loading}
             />
             <p>

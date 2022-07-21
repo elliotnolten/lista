@@ -1,4 +1,4 @@
-import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes} from "./utils";
+import {loopChildTextNodes, loopChildFrameNodes, loopChildInstanceNodes, camelize} from "./utils";
 import {postMessage} from "./postMessage";
 import _ from "lodash";
 
@@ -35,19 +35,23 @@ export async function populateCards(data) {
             let quickFact1 = {};
             let quickFact2 = {};
 
-            // If item is onlineSellable
-            if (result.onlineSellable) {
+            // Has item availability info?
+            console.log(result?.availability.length);
+            if (result?.availability.length > 0) {
                 // Objects for availability info
                 const homeDeliveryObj = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
                 const cashAndCarryObj = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
                 const {status, prefix, store, suffix} = cashAndCarryObj;
 
-                homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
-                cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+                if (homeDeliveryObj !== undefined)
+                    homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
+                if (cashAndCarryObj !== undefined) cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
 
                 // Objects for quick facts
                 quickFact1 = result?.quickFacts[0];
                 quickFact2 = result?.quickFacts[1];
+
+                console.log(homeDelivery, cashAndCarry, quickFact1, quickFact2);
             }
 
             // If there's no contextualImage, fallback to main image
@@ -109,7 +113,7 @@ export async function populateCards(data) {
             let name = matchingInstanceNodes[i][1];
             let row = matchingInstanceNodes[i][2];
             let variantValue = gatherValue(name, row, false);
-            let componentProp = gatherValue(name, componentProperties, true);
+            let componentProp = camelize(gatherValue(name, componentProperties, true));
 
             // If variantvalue is empty, hide node
             if (variantValue === "") {

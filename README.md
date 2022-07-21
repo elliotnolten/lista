@@ -79,8 +79,13 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
     "suffix": "",
     "isRegularCurrency": false
   },
+  "priceNumeral": 44.99,
   "contextualImageUrl": "https://www.ikea.com/nl/en/images/products/billy-bookcase-white__1051924_pe845813_s5.jpg",
   "mainImageAlt": "BILLY Bookcase, white, 80x28x202 cm",
+    "badge": {
+    "type": "TOP_SELLER",
+    "text": "Best seller"
+  },
   "breathTaking": false,
   "discount": "",
   "name": "BILLY",
@@ -93,13 +98,8 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
   "itemNoGlobal": "00263850",
   "onlineSellable": true,
   "lastChance": false,
-  "gprDescription": {},
-  "colors": [],
-  "priceNumeral": 44.99,
   "currencyCode": "EUR",
   "tag": "NONE",
-  "quickFacts": [],
-  "features": [],
   "homeDelivery": {
     "text": "Available for delivery",
     "status": "HIGH_IN_STOCK"
@@ -108,9 +108,13 @@ Check out this [API response example](https://sik.search.blue.cdtapps.com/nl/en/
     "text": "In stock at Lakeside",
     "status": "HIGH_IN_STOCK"
   },
-  "badge": {
-    "type": "TOP_SELLER",
-    "text": "Best seller"
+  "quickFact1": {
+    "id": "47474",
+    "name": "Memory foam"
+  },
+  "quickFact2": {
+    "id": "47465",
+    "name": "Firm"
   }
 }
 ```
