@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Button, Input, Select, Icon} from "react-figma-plugin-ds";
-import {fetchImageFromURL, fetchSIKApi} from "./Fetch";
+import {fetchImageFromURL, fetchSIKApi} from "../utils/Fetch";
 import {sendMessage} from "../utils/sendMessage";
 import {languages} from "../data/languages";
 import {sortOrders} from "../data/sortOrders";
