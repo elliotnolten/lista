@@ -36,22 +36,27 @@ export async function populateCards(data) {
             let quickFact2 = {};
 
             // Has item availability info?
-            console.log(result?.availability.length);
             if (result?.availability.length > 0) {
                 // Objects for availability info
                 const homeDeliveryObj = _.find(result?.availability, (obj) => obj.type2 === "HOME_DELIVERY");
                 const cashAndCarryObj = _.find(result?.availability, (obj) => obj.type2 === "CASH_AND_CARRY");
-                const {status, prefix, store, suffix} = cashAndCarryObj;
 
-                if (homeDeliveryObj !== undefined)
-                    homeDelivery = {text: homeDeliveryObj.text, status: homeDeliveryObj.status};
-                if (cashAndCarryObj !== undefined) cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+                if (homeDeliveryObj !== undefined) {
+                    const {text, status} = homeDeliveryObj;
+                    homeDelivery = {text, status};
+                }
+                if (cashAndCarryObj !== undefined) {
+                    const {status, prefix, store, suffix} = cashAndCarryObj;
+                    cashAndCarry = {text: `${prefix}${store}${suffix}`, status};
+                }
+            }
 
+            // Has quickFacts?
+            if (result?.quickFacts.length > 0) {
                 // Objects for quick facts
                 quickFact1 = result?.quickFacts[0];
                 quickFact2 = result?.quickFacts[1];
-
-                console.log(homeDelivery, cashAndCarry, quickFact1, quickFact2);
+                console.log(quickFact1, quickFact2);
             }
 
             // If there's no contextualImage, fallback to main image
