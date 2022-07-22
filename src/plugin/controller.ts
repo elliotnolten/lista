@@ -17,6 +17,7 @@ function main() {
     figma.ui.onmessage = async (message) => {
         if (message.type === "get-results") {
             let data = JSON.parse(message.payload);
+            console.log(data);
             await populateCards(data);
         }
         if (message.type === "imgData") {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Button, Input, Select, Icon} from "react-figma-plugin-ds";
+import {Button, Input, Select, Icon, Label} from "react-figma-plugin-ds";
 import {fetchImageFromURL, fetchSIKApi} from "../utils/Fetch";
 import {sendMessage} from "../utils/sendMessage";
 import {languages} from "../data/languages";
@@ -8,6 +8,7 @@ import {sortOrders} from "../data/sortOrders";
 export const Search = () => {
     const [loading, setLoading] = React.useState(false);
     const [query, setQuery] = React.useState("Billy");
+    const [response, setResponse] = React.useState({});
     const [size, setSize] = React.useState(0);
     const [lang, setLang] = React.useState(languages[0]);
     const [sortOrder, setSortOrder] = React.useState(sortOrders[0]);
@@ -56,23 +57,27 @@ export const Search = () => {
             })
             .join("&");
 
-        console.log(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
-
         setEndpoint(`https://sik.search.blue.cdtapps.com/${value}search-result-page?${queryString}`);
     }, [query, size, lang, sortOrder]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
+        console.log("submit");
+        sendMessage("get-results", response, "");
+    };
+
+    const handlePreview = async () => {
         setLoading(true);
         setDone(false);
         try {
             let response = await fetchSIKApi(endpoint);
             setLoading(false);
-            // @ts-ignore
-            sendMessage("get-results", {response}, response.searchResultPage.products.badge);
+            setResponse(response);
         } catch (error) {
             console.log(error);
         }
     };
+
+    console.log(response);
 
     return (
         <div className="form-fields">
@@ -84,6 +89,7 @@ export const Search = () => {
                 icon="Search"
                 iconColor="black"
                 isDisabled={!done && loading}
+                onBlur={() => console.log("blur")}
             />
             <div className="selects">
                 <Select
@@ -104,10 +110,49 @@ export const Search = () => {
                     />
                 </div>
             </div>
+            <Button onClick={handlePreview} isTertiary disabled={!done && loading}>
+                {loading ? "Loading..." : "Preview"}
+            </Button>
+            <div className="preview">
+                <Label>Output</Label>
+                <div className="preview-row type type--small">
+                    <div className="preview-key">Type</div>
+                    <div className="preview-value">Search result page</div>
+                    <div className="preview-action">
+                        <a href="" target="_blank">
+                            view page
+                        </a>
+                        <Icon className="icon" color="black8" name="check" onClick={null} string="Sort order" />
+                    </div>
+                </div>
+                <div className="preview-row type type--small">
+                    <div className="preview-key">Products</div>
+                    <div className="preview-value">
+                        {
+                            // @ts-ignore
+                            response?.searchResultPage?.products?.badge
+                        }
+                    </div>
+                    <div className="preview-action">
+                        <a href="" target="_blank">
+                            view api response
+                        </a>
+                        <Icon className="icon" color="black8" name="check" onClick={null} string="Sort order" />
+                    </div>
+                </div>
+                <div className="preview-row type type--small">
+                    <div className="preview-key">Selection</div>
+                    <div className="preview-value">20</div>
+                    <div className="preview-action">
+                        <a href="" target="_blank">
+                            Select less
+                        </a>
+                        <Icon className="icon" color="black8" name="warning" onClick={null} string="Sort order" />
+                    </div>
+                </div>
+            </div>
             <p>
-                <Button onClick={handleSubmit} tint="primary" disabled={!done && loading}>
-                    {loading ? "Loading..." : "Submit"}
-                </Button>
+                <Button onClick={handleSubmit}>Populate</Button>
             </p>
             {!done && loading && (
                 <div className="spinner-container">

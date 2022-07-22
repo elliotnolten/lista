@@ -3,7 +3,7 @@ import {postMessage} from "./postMessage";
 import _ from "lodash";
 
 export async function populateCards(data) {
-    const results = data.response.searchResultPage.products.main.items;
+    const results = data.searchResultPage.products.main.items;
 
     try {
         let nodes = figma.currentPage.selection;
@@ -63,7 +63,7 @@ export async function populateCards(data) {
             if (result.contextualImageUrl === undefined) result.contextualImageUrl = result.mainImageUrl;
 
             // Add prop for productDescription
-            const productDescription = `${result.typeName} ${
+            const productDescription = `${result.typeName}${
                 result?.itemMeasureReferenceText !== "" ? `, ${result.itemMeasureReferenceText}` : ""
             }`;
 
